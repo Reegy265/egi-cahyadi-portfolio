@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Egi Cahyadi — IT Infrastructure & NOC Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B1220;
+    --bg-soft: #0E1626;
+    --panel: #121B2E;
+    --panel-border: #1F2B42;
+    --text: #E8EDF4;
+    --text-muted: #8592A6;
+    --text-dim: #5D6B84;
+    --green: #3DDC84;
+    --green-dim: rgba(61,220,132,0.12);
+    --amber: #F2B84B;
+    --amber-dim: rgba(242,184,75,0.12);
+    --blue: #5B9DF9;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--green); color: #051007; }
+
+  a{ color: var(--green); text-decoration:none; }
+  a:hover{ text-decoration: underline; }
+  a:focus-visible, button:focus-visible{ outline: 2px solid var(--green); outline-offset: 3px; }
+
+  .mono{ font-family: 'JetBrains Mono', monospace; }
+  .display{ font-family: 'Space Grotesk', sans-serif; }
+
+  .wrap{ max-width: 900px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- Background grid texture ---------- */
+  .grid-bg{
+    position: fixed; inset:0; z-index:-1;
+    background-image:
+      linear-gradient(var(--panel-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--panel-border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.18;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  }
+
+  /* ---------- Top status bar ---------- */
+  .topbar{
+    border-bottom: 1px solid var(--panel-border);
+    background: var(--bg-soft);
+  }
+  .topbar-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 14px 28px;
+    max-width: 900px; margin: 0 auto;
+    font-size: 13px;
+  }
+  .status-live{ display:flex; align-items:center; gap:8px; color: var(--green); }
+  .dot{
+    width:8px; height:8px; border-radius:50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(61,220,132,0.6);
+    animation: pulse 2.2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow: 0 0 0 0 rgba(61,220,132,0.5); }
+    70%{ box-shadow: 0 0 0 8px rgba(61,220,132,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(61,220,132,0); }
+  }
+  .topbar-right{ color: var(--text-dim); }
+
+  /* ---------- Hero ---------- */
+  header.hero{
+    padding: 72px 0 56px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .eyebrow{
+    color: var(--green);
+    font-size: 12.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width: 22px; height:1px; background: var(--green);
+  }
+  h1.name{
+    font-size: clamp(38px, 6vw, 58px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin-bottom: 14px;
+  }
+  .role-line{
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    max-width: 560px;
+  }
+  .metrics-row{
+    display:flex; flex-wrap: wrap; gap: 0;
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    overflow:hidden;
+    margin-bottom: 28px;
+  }
+  .metric{
+    flex: 1 1 140px;
+    padding: 16px 20px;
+    border-right: 1px solid var(--panel-border);
+    background: var(--panel);
+  }
+  .metric:last-child{ border-right: none; }
+  .metric .val{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    color: var(--green);
+    font-weight: 600;
+  }
+  .metric .lbl{
+    font-size: 11.5px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+  }
+  .contact-row{
+    display:flex; flex-wrap:wrap; gap: 18px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .contact-row span{ display:flex; align-items:center; gap:7px; }
+  .contact-row .mono{ color: var(--text); }
+
+  /* ---------- Section shell ---------- */
+  section{ padding: 56px 0; border-bottom: 1px solid var(--panel-border); }
+  section:last-of-type{ border-bottom: none; }
+  .section-head{
+    display:flex; align-items:baseline; gap: 14px;
+    margin-bottom: 28px;
+  }
+  .section-num{
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  .section-title{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .section-intro{
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 620px;
+    margin-bottom: 30px;
+  }
+
+  /* ---------- Log-style system cards (experience) ---------- */
+  .sys-card{
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 24px 26px;
+    margin-bottom: 18px;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .sys-card.visible{ opacity:1; transform: translateY(0); }
+
+  .sys-head{
+    display:flex; align-items:flex-start; justify-content:space-between;
+    gap: 16px; flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .sys-title-block{ display:flex; align-items:center; gap:10px; }
+  .status-pill{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .status-pill.online{ background: var(--green-dim); color: var(--green); }
+  .status-pill.archived{ background: rgba(133,146,166,0.12); color: var(--text-dim); }
+  .sys-role{ font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; }
+  .sys-company{ color: var(--text-muted); font-size: 14.5px; margin-top: 2px; }
+  .sys-duration{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .log-list{ margin-top: 16px; list-style:none; }
+  .log-list li{
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 10px;
+    font-size: 14.5px;
+    color: var(--text);
+  }
+  .log-list li::before{
+    content: "›";
+    position: absolute; left: 2px; top: -1px;
+    color: var(--green);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+  }
+  .log-list li:last-child{ margin-bottom: 0; }
+
+  /* ---------- Skills ---------- */
+  .stack-groups{ display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 18px; }
+  .stack-group{
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .stack-group h3{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }
+  .tag-row{ display:flex; flex-wrap:wrap; gap: 8px; }
+  .tag{
+    font-size: 13px;
+    padding: 5px 11px;
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    background: var(--bg-soft);
+  }
+
+  /* ---------- Education / Certs ---------- */
+  .two-col{ display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; }
+  @media (max-width: 720px){ .two-col{ grid-template-columns: 1fr; } }
+
+  .edu-item{ margin-bottom: 22px; }
+  .edu-item:last-child{ margin-bottom:0; }
+  .edu-degree{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px; }
+  .edu-meta{ color: var(--text-dim); font-size: 13px; margin-top:2px; font-family:'JetBrains Mono', monospace; }
+  .edu-detail{ color: var(--text-muted); font-size: 14px; margin-top: 6px; }
+
+  .cert-list{ list-style:none; }
+  .cert-list li{
+    display:flex; justify-content:space-between; gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--panel-border);
+    font-size: 14px;
+  }
+  .cert-list li:last-child{ border-bottom:none; }
+  .cert-name{ color: var(--text); }
+  .cert-date{ color: var(--text-dim); font-family:'JetBrains Mono', monospace; font-size: 12.5px; white-space:nowrap; }
+
+  /* ---------- Footer / contact terminal ---------- */
+  footer{
+    padding: 60px 0 70px;
+  }
+  .term{
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 26px 28px;
+  }
+  .term-line{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .term-line .prompt{ color: var(--green); margin-right: 8px; }
+  .term-line .cmd{ color: var(--text); }
+  .term-links{ margin-top: 18px; display:flex; flex-wrap:wrap; gap: 20px; }
+  .term-links a{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    color: var(--blue);
+  }
+  .footer-note{
+    margin-top: 28px;
+    font-size: 12.5px;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  /* ---------- Case study (incident timeline) ---------- */
+  .case-intro-card{
+    display:flex; flex-wrap:wrap; gap: 22px;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 34px;
+  }
+  .case-meta{ flex: 1 1 160px; }
+  .case-meta .k{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing:0.06em;
+    margin-bottom: 4px;
+  }
+  .case-meta .v{ font-size: 14.5px; color: var(--text); }
+  .case-meta .v.fail{ color: #F26B6B; }
+  .case-meta .v.ok{ color: var(--green); }
+
+  .timeline{ position:relative; }
+  .timeline::before{
+    content:"";
+    position:absolute; left: 27px; top: 10px; bottom: 10px;
+    width: 2px;
+    background: linear-gradient(var(--panel-border), var(--panel-border));
+  }
+  .tl-step{
+    position:relative;
+    display:flex; gap: 22px;
+    margin-bottom: 40px;
+  }
+  .tl-step:last-child{ margin-bottom:0; }
+  .tl-node{
+    flex: 0 0 56px;
+    display:flex; flex-direction:column; align-items:center;
+    z-index:1;
+  }
+  .tl-badge{
+    width: 56px; height:56px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px; font-weight:600;
+    border: 2px solid var(--panel-border);
+    background: var(--bg-soft);
+    color: var(--text-muted);
+    text-align:center; line-height:1.2;
+  }
+  .tl-step.step-fail .tl-badge{ border-color:#F26B6B; color:#F26B6B; }
+  .tl-step.step-find .tl-badge{ border-color: var(--amber); color: var(--amber); }
+  .tl-step.step-fix .tl-badge{ border-color: var(--blue); color: var(--blue); }
+  .tl-step.step-ok .tl-badge{ border-color: var(--green); color: var(--green); }
+
+  .tl-body{ flex:1; min-width:0; padding-top: 6px; }
+  .tl-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px; text-transform:uppercase; letter-spacing:0.08em;
+    margin-bottom: 6px;
+  }
+  .step-fail .tl-label{ color:#F26B6B; }
+  .step-find .tl-label{ color: var(--amber); }
+  .step-fix .tl-label{ color: var(--blue); }
+  .step-ok .tl-label{ color: var(--green); }
+
+  .tl-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-size: 18px; font-weight:600;
+    margin-bottom: 8px;
+  }
+  .tl-text{
+    font-size: 14.5px; color: var(--text-muted);
+    max-width: 640px;
+    margin-bottom: 16px;
+  }
+  .tl-shot{
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    overflow:hidden;
+    background: #05070d;
+    max-width: 640px;
+  }
+  .tl-shot img{ display:block; width:100%; height:auto; }
+  .tl-caption{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--text-dim);
+    margin-top: 8px;
+  }
+  .redact-note{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size: 11.5px; color: var(--text-dim);
+    margin-top: 6px;
+  }
+  .redact-note .box{
+    width:10px; height:10px; background:#3A4358; border-radius:2px;
+    display:inline-block;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .dot{ animation: none; }
+    .sys-card{ transition: none; opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="status-live"><span class="dot"></span><span class="mono">STATUS: OPEN TO OPPORTUNITIES</span></div>
+    <div class="topbar-right mono">JAKARTA, ID</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Engineering Portfolio</div>
+    <h1 class="name display">Egi Cahyadi</h1>
+    <p class="role-line">IT Infrastructure & NOC Engineer — memantau, merawat, dan menjaga ketersediaan sistem enterprise di lingkungan data center dan instansi pemerintah.</p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="val mono">2+ yrs</div>
+        <div class="lbl">Pengalaman On-Site</div>
+      </div>
+      <div class="metric">
+        <div class="val mono">1x24h</div>
+        <div class="lbl">SLA Respons</div>
+      </div>
+      <div class="metric">
+        <div class="val mono">3</div>
+        <div class="lbl">Cluster Dimonitor</div>
+      </div>
+      <div class="metric">
+        <div class="val mono">2</div>
+        <div class="lbl">Instansi Pemerintah</div>
+      </div>
+    </div>
+
+    <div class="contact-row">
+      <span>✉ <span class="mono">Egi.cahyadi265@gmail.com</span></span>
+      <span>☎ <span class="mono">+62 813-8191-9633</span></span>
+      <span>in <a href="https://www.linkedin.com/in/egi-cahyadi-48b85a157/" target="_blank" rel="noopener">linkedin.com/in/egi-cahyadi</a></span>
+    </div>
+  </header>
+
+  <section id="about">
+    <div class="section-head">
+      <span class="section-num mono">01</span>
+      <span class="section-title">Ringkasan</span>
+    </div>
+    <p class="section-intro" style="max-width:680px;">
+      Berpengalaman menjaga kestabilan infrastruktur IT di lingkungan enterprise dan instansi pemerintah — mulai dari monitoring traffic real-time, preventive/corrective maintenance server berbasis Red Hat & OpenShift, hingga pembuatan dan perbaikan pipeline CI/CD. Terbiasa bekerja dalam kerangka SLA ketat, berkoordinasi dengan vendor/principal untuk eskalasi insiden, dan menyusun dokumentasi operasional secara rutin.
+    </p>
+  </section>
+
+  <section id="experience">
+    <div class="section-head">
+      <span class="section-num mono">02</span>
+      <span class="section-title">Sistem yang Ditangani</span>
+    </div>
+    <p class="section-intro">Riwayat penempatan kerja, disusun seperti log status — dari yang sedang berjalan hingga yang telah selesai.</p>
+
+    <div class="sys-card">
+      <div class="sys-head">
+        <div>
+          <div class="sys-title-block">
+            <span class="status-pill online">● Aktif</span>
+          </div>
+          <div class="sys-role">Engineering On Site</div>
+          <div class="sys-company">PT Mitra Inti Bersama — Ditempatkan di Direktorat Jenderal Bea Cukai Pusat</div>
+        </div>
+        <div class="sys-duration">FEB 2026 — SEKARANG</div>
+      </div>
+      <ul class="log-list">
+        <li>Monitoring real-time traffic infrastruktur via Grafana setiap 3 jam di tiga cluster (DC, DRC, DEV) untuk menjaga ketersediaan sesuai SLA.</li>
+        <li>Menyusun log book harian serta laporan harian & bulanan dari data console Red Hat DC, DRC, dan DEV.</li>
+        <li>Membangun dan memperbaiki pipeline CI/CD di Jenkins & GitLab atas permintaan user, dengan SLA respons 1x24 jam.</li>
+        <li>Memimpin proses migrasi cluster produksi dari lingkungan lama (PRODDC) ke cluster baru (DCPROD) tanpa mengganggu layanan berjalan.</li>
+        <li>Melakukan preventive & corrective maintenance aplikasi berbasis Red Hat, serta eskalasi teknis dengan principal.</li>
+        <li>Mengelola dokumentasi operasional di spreadsheet & JIRA, dan memimpin monthly meeting dengan user Bea Cukai.</li>
+      </ul>
+    </div>
+
+    <div class="sys-card">
+      <div class="sys-head">
+        <div>
+          <div class="sys-title-block">
+            <span class="status-pill archived">◍ Selesai</span>
+          </div>
+          <div class="sys-role">Engineer On Site</div>
+          <div class="sys-company">PT Phoenix Cendekia Indonesia — Data Center Ditjen Dukcapil, Kemendagri</div>
+        </div>
+        <div class="sys-duration">FEB 2025 — JAN 2026</div>
+      </div>
+      <ul class="log-list">
+        <li>Memonitor traffic bandwidth, keamanan jaringan, dan ringkasan performa melalui Fortigate & Sonicwall.</li>
+        <li>Melaksanakan preventive & corrective maintenance data center untuk menjaga uptime layanan.</li>
+        <li>Melakukan eskalasi dan koordinasi dengan principal lokal maupun luar negeri untuk penanganan kasus teknis.</li>
+        <li>Menyelenggarakan annual meeting bertema transfer knowledge kepada user Kemendagri.</li>
+      </ul>
+    </div>
+
+    <div class="sys-card">
+      <div class="sys-head">
+        <div>
+          <div class="sys-title-block">
+            <span class="status-pill archived">◍ Selesai</span>
+          </div>
+          <div class="sys-role">Warehouse Koordinator</div>
+          <div class="sys-company">PT Imari Nourriture Indonesia — Event PON Medan-Aceh 2024</div>
+        </div>
+        <div class="sys-duration">MEI — OKT 2024</div>
+      </div>
+      <ul class="log-list">
+        <li>Mengoordinasikan data vendor dan stok barang (food & non-food) dengan menerapkan standar FIFO untuk kelancaran arus gudang selama event skala nasional.</li>
+      </ul>
+    </div>
+
+    <div class="sys-card">
+      <div class="sys-head">
+        <div>
+          <div class="sys-title-block">
+            <span class="status-pill archived">◍ Selesai</span>
+          </div>
+          <div class="sys-role">IT Staff</div>
+          <div class="sys-company">PT Gobel Dharma Sarana Karya</div>
+        </div>
+        <div class="sys-duration">JAN 2019 — MAR 2020</div>
+      </div>
+      <ul class="log-list">
+        <li>Mengelola entry data order & inventory bahan baku dalam sistem, serta mewakili manager IT dalam technical meeting dan analisis jaringan komunikasi di site LNG Tangguh, Papua Barat.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="section-head">
+      <span class="section-num mono">03</span>
+      <span class="section-title">Stack & Kompetensi</span>
+    </div>
+    <div class="stack-groups">
+      <div class="stack-group">
+        <h3>Platform & Infrastruktur</h3>
+        <div class="tag-row">
+          <span class="tag">Kubernetes</span>
+          <span class="tag">Red Hat OpenShift</span>
+          <span class="tag">Linux / Red Hat Admin</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <h3>CI/CD & Automation</h3>
+        <div class="tag-row">
+          <span class="tag">Jenkins</span>
+          <span class="tag">GitLab CI/CD</span>
+          <span class="tag">Pipeline Troubleshooting</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <h3>Monitoring & Network</h3>
+        <div class="tag-row">
+          <span class="tag">Grafana</span>
+          <span class="tag">Fortigate</span>
+          <span class="tag">Sonicwall</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <h3>Operasional</h3>
+        <div class="tag-row">
+          <span class="tag">Preventive Maintenance</span>
+          <span class="tag">Incident Escalation</span>
+          <span class="tag">SLA Management</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <h3>Dokumentasi</h3>
+        <div class="tag-row">
+          <span class="tag">JIRA</span>
+          <span class="tag">Confluence</span>
+          <span class="tag">Reporting</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <h3>Soft Skills</h3>
+        <div class="tag-row">
+          <span class="tag">Manajemen Waktu</span>
+          <span class="tag">Analisis</span>
+          <span class="tag">Komunikasi</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="case-study">
+    <div class="section-head">
+      <span class="section-num mono">04</span>
+      <span class="section-title">Studi Kasus Troubleshooting</span>
+    </div>
+    <p class="section-intro">Contoh alur penanganan insiden pipeline CI/CD dari laporan masuk hingga layanan kembali normal — didokumentasikan langsung dari sistem kerja sehari-hari.</p>
+
+    <div class="case-intro-card">
+      <div class="case-meta">
+        <div class="k">Sistem</div>
+        <div class="v">Pipeline CI/CD (Jenkins → OpenShift)</div>
+      </div>
+      <div class="case-meta">
+        <div class="k">Trigger</div>
+        <div class="v">Laporan user, SLA 1x24 jam</div>
+      </div>
+      <div class="case-meta">
+        <div class="k">Status Awal</div>
+        <div class="v fail">Build #34 — Gagal di stage App Push</div>
+      </div>
+      <div class="case-meta">
+        <div class="k">Status Akhir</div>
+        <div class="v ok">Deploy to Staging — Sukses</div>
+      </div>
+    </div>
+
+    <div class="timeline">
+
+      <div class="tl-step step-fail">
+        <div class="tl-node"><div class="tl-badge">REQUEST</div></div>
+        <div class="tl-body">
+          <div class="tl-label">01 — Laporan Masuk</div>
+          <div class="tl-title">Pipeline gagal build, deployment tertahan</div>
+          <p class="tl-text">User melaporkan pipeline deployment tidak bisa selesai. Berdasarkan SLA 1x24 jam, penanganan langsung dimulai dengan mengecek Stage View di Jenkins untuk memastikan tahap mana yang gagal.</p>
+          <div class="tl-shot"><img src="assets/case-01-status.jpg" alt="Jenkins Stage View menunjukkan pipeline gagal di stage App Push"></div>
+          <div class="tl-caption">Stage View — Build #34 gagal di stage "App Push" setelah 2 menit 27 detik</div>
+        </div>
+      </div>
+
+      <div class="tl-step step-find">
+        <div class="tl-node"><div class="tl-badge">CEK<br>KONFIG</div></div>
+        <div class="tl-body">
+          <div class="tl-label">02 — Investigasi</div>
+          <div class="tl-title">Menelusuri konfigurasi repository & credential di Jenkins</div>
+          <p class="tl-text">Masuk ke halaman Configure job untuk memeriksa apakah Repository URL dan credential yang terpasang masih valid dan sesuai dengan yang didefinisikan di source control — langkah standar sebelum menduga masalah ada di sisi kode aplikasi.</p>
+          <div class="tl-shot"><img src="assets/case-02-configure.jpg" alt="Halaman konfigurasi Jenkins untuk memeriksa repository dan credential"></div>
+          <div class="tl-caption">Jenkins → Configure → Advanced Project Options (repository & credential disamarkan)</div>
+        </div>
+      </div>
+
+      <div class="tl-step step-fix">
+        <div class="tl-node"><div class="tl-badge">PERBAIKAN</div></div>
+        <div class="tl-body">
+          <div class="tl-label">03 — Tindakan</div>
+          <div class="tl-title">Root cause ditemukan di Jenkinsfile, perbaikan via merge request</div>
+          <p class="tl-text">Root cause ditemukan pada variabel konfigurasi registry & image pull secret di dalam <code style="font-family:'JetBrains Mono',monospace;color:var(--text)">staging.Jenkinsfile</code> yang tidak lagi sinkron dengan environment target. Perbaikan dilakukan langsung di GitLab dengan membuat merge request ke branch patch, menjaga jejak perubahan tetap terdokumentasi dan bisa di-review.</p>
+          <div class="tl-shot"><img src="assets/case-03-jenkinsfile.jpg" alt="Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential"></div>
+          <div class="tl-caption">GitLab → Edit file → staging.Jenkinsfile (nilai registry & credential disamarkan)</div>
+        </div>
+      </div>
+
+      <div class="tl-step step-ok">
+        <div class="tl-node"><div class="tl-badge">RESOLVED</div></div>
+        <div class="tl-body">
+          <div class="tl-label">04 — Hasil</div>
+          <div class="tl-title">Pipeline berjalan normal hingga deploy ke staging</div>
+          <p class="tl-text">Setelah perbaikan di-merge, pipeline di-run ulang dan seluruh stage berhasil dilalui — mulai dari Git Clone, App Build, App Push, hingga Deploy to Staging. Log Blue Ocean mengonfirmasi setiap langkah deployment (apply manifest, set image, rollout restart) berjalan sesuai rencana tanpa error.</p>
+          <div class="tl-shot"><img src="assets/case-04-deploy.jpg" alt="Blue Ocean pipeline view menunjukkan seluruh stage sukses hingga Deploy to Staging"></div>
+          <div class="tl-caption">Blue Ocean — seluruh stage sukses, deployment ke staging selesai (domain internal disamarkan)</div>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="redact-note"><span class="box"></span> Nama domain, hostname registry, dan credential ID pada tangkapan layar telah disamarkan untuk menjaga kerahasiaan sistem instansi.</p>
+  </section>
+
+  <section id="education">
+    <div class="section-head">
+      <span class="section-num mono">05</span>
+      <span class="section-title">Pendidikan & Sertifikasi</span>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="edu-item">
+          <div class="edu-degree">S1 Sistem Informasi</div>
+          <div class="edu-meta">Universitas Nusa Mandiri · Sep 2021 – Des 2022</div>
+          <div class="edu-detail">IPK 3,66 (Pujian). Skripsi: "Sistem Informasi Penjualan Buku CV. Multi Lentera Abadi"</div>
+        </div>
+        <div class="edu-item">
+          <div class="edu-degree">D-III Manajemen Informatika</div>
+          <div class="edu-meta">Bina Sarana Informatika · Sep 2014 – Nov 2017</div>
+          <div class="edu-detail">IPK 3,63 (Pujian). Tugas Akhir: "Perancangan Sistem Informasi Penjualan Merchandise Komunitas Motor Box Berbasis Web"</div>
+        </div>
+      </div>
+      <div>
+        <ul class="cert-list">
+          <li><span class="cert-name">Analis Program — BNSP</span><span class="cert-date">SEP 2022</span></li>
+          <li><span class="cert-name">Intro to Data Analytics — IBM</span><span class="cert-date">JUL 2025</span></li>
+          <li><span class="cert-name">Intro to Cybersecurity Careers — IBM</span><span class="cert-date">JUL 2025</span></li>
+          <li><span class="cert-name">Technical Support Fundamentals — Google</span><span class="cert-date">SEP 2024</span></li>
+          <li><span class="cert-name">TOEPS (Skor 537)</span><span class="cert-date">FEB 2023</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="term">
+      <div class="term-line"><span class="prompt">$</span><span class="cmd">whoami</span></div>
+      <div class="term-line" style="color:var(--text)">Egi Cahyadi — IT Infrastructure & NOC Engineer, Jakarta</div>
+      <div class="term-line"><span class="prompt">$</span><span class="cmd">contact --reach</span></div>
+      <div class="term-links">
+        <a href="mailto:Egi.cahyadi265@gmail.com">Egi.cahyadi265@gmail.com</a>
+        <a href="https://www.linkedin.com/in/egi-cahyadi-48b85a157/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href="tel:+6281381919633">+62 813-8191-9633</a>
+      </div>
+    </div>
+    <div class="footer-note">Portofolio ini terakhir diperbarui Agustus 2026.</div>
+  </footer>
+
+</div>
+
+<script>
+  const cards = document.querySelectorAll('.sys-card');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  cards.forEach(c => io.observe(c));
+</script>
+
+</body>
+</html>
