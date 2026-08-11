@@ -627,7 +627,7 @@
           <div class="tl-label">01 — Laporan Masuk</div>
           <div class="tl-title">Pipeline gagal build, deployment tertahan</div>
           <p class="tl-text">User melaporkan pipeline deployment tidak bisa selesai. Berdasarkan SLA 1x24 jam, penanganan langsung dimulai dengan mengecek Stage View di Jenkins untuk memastikan tahap mana yang gagal.</p>
-          <div class="tl-shot"><img src="assets/case-01-status.jpg" alt="Jenkins Stage View menunjukkan pipeline gagal di stage App Push"></div>
+          <div class="tl-shot"><img src="case-01-status.jpg" alt="Jenkins Stage View menunjukkan pipeline gagal di stage App Push"></div>
           <div class="tl-caption">Stage View — Build #34 gagal di stage "App Push" setelah 2 menit 27 detik</div>
         </div>
       </div>
@@ -638,7 +638,7 @@
           <div class="tl-label">02 — Investigasi</div>
           <div class="tl-title">Menelusuri konfigurasi repository & credential di Jenkins</div>
           <p class="tl-text">Masuk ke halaman Configure job untuk memeriksa apakah Repository URL dan credential yang terpasang masih valid dan sesuai dengan yang didefinisikan di source control — langkah standar sebelum menduga masalah ada di sisi kode aplikasi.</p>
-          <div class="tl-shot"><img src="assets/case-02-configure.jpg" alt="Halaman konfigurasi Jenkins untuk memeriksa repository dan credential"></div>
+          <div class="tl-shot"><img src="case-02-configure.jpg" alt="Halaman konfigurasi Jenkins untuk memeriksa repository dan credential"></div>
           <div class="tl-caption">Jenkins → Configure → Advanced Project Options (repository & credential disamarkan)</div>
         </div>
       </div>
@@ -649,7 +649,7 @@
           <div class="tl-label">03 — Tindakan</div>
           <div class="tl-title">Root cause ditemukan di Jenkinsfile, perbaikan via merge request</div>
           <p class="tl-text">Root cause ditemukan pada variabel konfigurasi registry & image pull secret di dalam <code style="font-family:'JetBrains Mono',monospace;color:var(--text)">staging.Jenkinsfile</code> yang tidak lagi sinkron dengan environment target. Perbaikan dilakukan langsung di GitLab dengan membuat merge request ke branch patch, menjaga jejak perubahan tetap terdokumentasi dan bisa di-review.</p>
-          <div class="tl-shot"><img src="assets/case-03-jenkinsfile.jpg" alt="Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential"></div>
+          <div class="tl-shot"><img src="case-03-jenkinsfile.jpg" alt="Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential"></div>
           <div class="tl-caption">GitLab → Edit file → staging.Jenkinsfile (nilai registry & credential disamarkan)</div>
         </div>
       </div>
@@ -660,7 +660,7 @@
           <div class="tl-label">04 — Hasil</div>
           <div class="tl-title">Pipeline berjalan normal hingga deploy ke staging</div>
           <p class="tl-text">Setelah perbaikan di-merge, pipeline di-run ulang dan seluruh stage berhasil dilalui — mulai dari Git Clone, App Build, App Push, hingga Deploy to Staging. Log Blue Ocean mengonfirmasi setiap langkah deployment (apply manifest, set image, rollout restart) berjalan sesuai rencana tanpa error.</p>
-          <div class="tl-shot"><img src="assets/case-04-deploy.jpg" alt="Blue Ocean pipeline view menunjukkan seluruh stage sukses hingga Deploy to Staging"></div>
+          <div class="tl-shot"><img src="case-04-deploy.jpg" alt="Blue Ocean pipeline view menunjukkan seluruh stage sukses hingga Deploy to Staging"></div>
           <div class="tl-caption">Blue Ocean — seluruh stage sukses, deployment ke staging selesai (domain internal disamarkan)</div>
         </div>
       </div>
