@@ -379,8 +379,27 @@
     overflow:hidden;
     background: #05070d;
     max-width: 640px;
+    cursor: zoom-in;
+    position: relative;
   }
-  .tl-shot img{ display:block; width:100%; height:auto; }
+  .tl-shot::after{
+    content: "⤢ Klik untuk perbesar";
+    position: absolute; right: 10px; bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    background: rgba(11,18,32,0.82);
+    border: 1px solid var(--panel-border);
+    padding: 4px 9px;
+    border-radius: 6px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+  .tl-shot:hover::after{ opacity:1; transform: translateY(0); }
+  .tl-shot img{ display:block; width:100%; height:auto; transition: transform 0.35s ease; }
+  .tl-shot:hover img{ transform: scale(1.015); }
   .tl-caption{
     font-family:'JetBrains Mono', monospace;
     font-size: 11px; color: var(--text-dim);
@@ -394,6 +413,63 @@
   .redact-note .box{
     width:10px; height:10px; background:#3A4358; border-radius:2px;
     display:inline-block;
+  }
+
+  /* ---------- Lightbox (image pop-out) ---------- */
+  .tl-shot{ cursor: zoom-in; position: relative; }
+  .tl-shot::after{
+    content: "⤢ Klik untuk perbesar";
+    position: absolute; bottom: 10px; right: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #fff;
+    background: rgba(11,18,32,0.75);
+    padding: 4px 9px;
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .tl-shot:hover::after{ opacity: 1; }
+  .tl-shot:hover img{ filter: brightness(0.92); }
+
+  .lightbox{
+    display:none;
+    position: fixed; inset:0; z-index: 100;
+    background: rgba(5,7,13,0.92);
+    align-items:center; justify-content:center;
+    padding: 40px 20px;
+    cursor: zoom-out;
+    animation: fadeIn 0.2s ease;
+  }
+  .lightbox.open{ display:flex; }
+  @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
+  .lightbox img{
+    max-width: min(1100px, 92vw);
+    max-height: 88vh;
+    width: auto; height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--panel-border);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .lightbox-close{
+    position: absolute; top: 22px; right: 28px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    color: var(--text);
+    font-size: 20px;
+    display:flex; align-items:center; justify-content:center;
+    cursor: pointer;
+  }
+  .lightbox-close:hover{ border-color: var(--green); color: var(--green); }
+  .lightbox-caption{
+    position:absolute; bottom: 28px; left:0; right:0;
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text-muted);
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -627,7 +703,7 @@
           <div class="tl-label">01 — Laporan Masuk</div>
           <div class="tl-title">Pipeline gagal build, deployment tertahan</div>
           <p class="tl-text">User melaporkan pipeline deployment tidak bisa selesai. Berdasarkan SLA 1x24 jam, penanganan langsung dimulai dengan mengecek Stage View di Jenkins untuk memastikan tahap mana yang gagal.</p>
-          <div class="tl-shot"><img src="case-01-status.jpg" alt="Jenkins Stage View menunjukkan pipeline gagal di stage App Push"></div>
+          <div class="tl-shot"><img src="case-01-status.jpg" alt="Jenkins Stage View menunjukkan pipeline gagal di stage App Push" onclick="openLightbox(this)"></div>
           <div class="tl-caption">Stage View — Build #34 gagal di stage "App Push" setelah 2 menit 27 detik</div>
         </div>
       </div>
@@ -638,7 +714,7 @@
           <div class="tl-label">02 — Investigasi</div>
           <div class="tl-title">Menelusuri konfigurasi repository & credential di Jenkins</div>
           <p class="tl-text">Masuk ke halaman Configure job untuk memeriksa apakah Repository URL dan credential yang terpasang masih valid dan sesuai dengan yang didefinisikan di source control — langkah standar sebelum menduga masalah ada di sisi kode aplikasi.</p>
-          <div class="tl-shot"><img src="case-02-configure.jpg" alt="Halaman konfigurasi Jenkins untuk memeriksa repository dan credential"></div>
+          <div class="tl-shot"><img src="case-02-configure.jpg" alt="Halaman konfigurasi Jenkins untuk memeriksa repository dan credential" onclick="openLightbox(this)"></div>
           <div class="tl-caption">Jenkins → Configure → Advanced Project Options (repository & credential disamarkan)</div>
         </div>
       </div>
@@ -649,7 +725,7 @@
           <div class="tl-label">03 — Tindakan</div>
           <div class="tl-title">Root cause ditemukan di Jenkinsfile, perbaikan via merge request</div>
           <p class="tl-text">Root cause ditemukan pada variabel konfigurasi registry & image pull secret di dalam <code style="font-family:'JetBrains Mono',monospace;color:var(--text)">staging.Jenkinsfile</code> yang tidak lagi sinkron dengan environment target. Perbaikan dilakukan langsung di GitLab dengan membuat merge request ke branch patch, menjaga jejak perubahan tetap terdokumentasi dan bisa di-review.</p>
-          <div class="tl-shot"><img src="case-03-jenkinsfile.jpg" alt="Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential"></div>
+          <div class="tl-shot"><img src="case-03-jenkinsfile.jpg" alt="Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential" onclick="openLightbox(this)"></div>
           <div class="tl-caption">GitLab → Edit file → staging.Jenkinsfile (nilai registry & credential disamarkan)</div>
         </div>
       </div>
@@ -658,10 +734,10 @@
         <div class="tl-node"><div class="tl-badge">RESOLVED</div></div>
         <div class="tl-body">
           <div class="tl-label">04 — Hasil</div>
-          <div class="tl-title">Pipeline berjalan normal hingga deploy ke staging</div>
-          <p class="tl-text">Setelah perbaikan di-merge, pipeline di-run ulang dan seluruh stage berhasil dilalui — mulai dari Git Clone, App Build, App Push, hingga Deploy to Staging. Log Blue Ocean mengonfirmasi setiap langkah deployment (apply manifest, set image, rollout restart) berjalan sesuai rencana tanpa error.</p>
-          <div class="tl-shot"><img src="case-04-deploy.jpg" alt="Blue Ocean pipeline view menunjukkan seluruh stage sukses hingga Deploy to Staging"></div>
-          <div class="tl-caption">Blue Ocean — seluruh stage sukses, deployment ke staging selesai (domain internal disamarkan)</div>
+          <div class="tl-title">Pipeline berjalan normal hingga deploy ke Production</div>
+          <p class="tl-text">Setelah perbaikan di-merge, pipeline di-run ulang dan seluruh stage berhasil dilalui — mulai dari Git Clone, App Build, App Push, hingga deployment ke environment Production (DC & DRC). Stage View mengonfirmasi setiap tahap, termasuk App Deploy to Prod DC OCP dan Prod DRC OCP, berjalan sesuai rencana tanpa error.</p>
+          <div class="tl-shot"><img src="case-04-deploy.jpg" alt="Jenkins Stage View menunjukkan seluruh stage sukses hingga deployment ke Production DC dan DRC" onclick="openLightbox(this)"></div>
+          <div class="tl-caption">Stage View — seluruh stage sukses, deployment ke Production DC & DRC selesai (nama project disamarkan)</div>
         </div>
       </div>
 
@@ -716,6 +792,12 @@
 
 </div>
 
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <div class="lightbox-close" onclick="closeLightbox(event)">✕</div>
+  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
 <script>
   const cards = document.querySelectorAll('.sys-card');
   const io = new IntersectionObserver((entries) => {
@@ -727,6 +809,24 @@
     });
   }, { threshold: 0.15 });
   cards.forEach(c => io.observe(c));
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+
+  function openLightbox(imgEl){
+    lightboxImg.src = imgEl.src;
+    lightboxCaption.textContent = imgEl.alt;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox(e){
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') closeLightbox(e);
+  });
 </script>
 
 </body>
