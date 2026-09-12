@@ -428,6 +428,23 @@
   .cert-image{ display:block; max-width:100%; max-height:70dvh; width:auto; height:auto; margin:auto; object-fit:contain; }
   .cert-message{ padding:30px 8px; color:var(--text-muted); }
   .cert-image[hidden], .cert-message[hidden]{ display:none; }
+
+  .case-zoom-trigger{ display:block; width:100%; padding:0; cursor:zoom-in; text-align:left; color:inherit; }
+  .case-zoom-trigger:hover{ border-color:var(--green); }
+  .zoom-dialog{ margin:auto; width:calc(100% - 24px); max-width:1400px; height:calc(100dvh - 24px); max-height:calc(100dvh - 24px); padding:0; border:1px solid var(--panel-border); border-radius:12px; background:var(--bg-soft); color:var(--text); overflow:hidden; }
+  .zoom-dialog[open]{ display:flex; flex-direction:column; }
+  .zoom-dialog::backdrop{ background:rgba(3,7,15,.9); }
+  .zoom-toolbar{ flex-shrink:0; display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--panel-border); }
+  .zoom-toolbar h2{ flex:1 1 220px; font:600 15px 'Space Grotesk',sans-serif; }
+  .zoom-controls{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+  .zoom-controls button{ min-width:40px; min-height:40px; padding:6px 10px; border:1px solid var(--panel-border); border-radius:6px; background:var(--panel); color:var(--text); font:inherit; cursor:pointer; }
+  .zoom-controls button:disabled{ opacity:.4; cursor:default; }
+  .zoom-level{ min-width:48px; text-align:center; font:12px 'JetBrains Mono',monospace; }
+  .zoom-viewport{ flex:1; min-height:0; overflow:auto; padding:12px; overscroll-behavior:contain; }
+  .zoom-image{ display:block; max-width:none; margin:auto; height:auto; }
+  .zoom-image[hidden], .zoom-status[hidden]{ display:none; }
+  .zoom-status{ padding:30px 12px; text-align:center; color:var(--text-muted); }
+  .zoom-hint{ flex-shrink:0; padding:8px 16px; color:var(--text-muted); font-size:12px; }
 </style>
 </head>
 <body>
@@ -662,7 +679,7 @@
           <div class="tl-label"><span data-i18n="text_62">01 — Laporan Masuk</span></div>
           <div class="tl-title"><span data-i18n="text_63">Pipeline gagal build, deployment tertahan</span></div>
           <p class="tl-text"><span data-i18n="text_64">User melaporkan pipeline deployment tidak bisa selesai. Berdasarkan SLA 1x24 jam, penanganan langsung dimulai dengan mengecek Stage View di Jenkins untuk memastikan tahap mana yang gagal.</span></p>
-          <div class="tl-shot"><img src="case-01-status.jpg" alt="Jenkins Stage View menunjukkan pipeline gagal di stage App Push" data-i18n-alt="alt_0"></div>
+          <button type="button" class="tl-shot case-zoom-trigger" aria-haspopup="dialog"><img src="case-01-status.jpg" alt="Jenkins Stage View menunjukkan pipeline gagal di stage App Push" data-i18n-alt="alt_0"></button>
           <div class="tl-caption"><span data-i18n="text_65">Stage View — Build #34 gagal di stage &quot;App Push&quot; setelah 2 menit 27 detik</span></div>
         </div>
       </div>
@@ -673,7 +690,7 @@
           <div class="tl-label"><span data-i18n="text_68">02 — Investigasi</span></div>
           <div class="tl-title"><span data-i18n="text_69">Menelusuri konfigurasi repository &amp; credential di Jenkins</span></div>
           <p class="tl-text"><span data-i18n="text_70">Masuk ke halaman Configure job untuk memeriksa apakah Repository URL dan credential yang terpasang masih valid dan sesuai dengan yang didefinisikan di source control — langkah standar sebelum menduga masalah ada di sisi kode aplikasi.</span></p>
-          <div class="tl-shot"><img src="case-02-configure.jpg" alt="Halaman konfigurasi Jenkins untuk memeriksa repository dan credential" data-i18n-alt="alt_1"></div>
+          <button type="button" class="tl-shot case-zoom-trigger" aria-haspopup="dialog"><img src="case-02-configure.jpg" alt="Halaman konfigurasi Jenkins untuk memeriksa repository dan credential" data-i18n-alt="alt_1"></button>
           <div class="tl-caption"><span data-i18n="text_71">Jenkins → Configure → Advanced Project Options (repository &amp; credential disamarkan)</span></div>
         </div>
       </div>
@@ -684,7 +701,7 @@
           <div class="tl-label"><span data-i18n="text_73">03 — Tindakan</span></div>
           <div class="tl-title"><span data-i18n="text_74">Root cause ditemukan di Jenkinsfile, perbaikan via merge request</span></div>
           <p class="tl-text"><span data-i18n="text_75">Root cause ditemukan pada variabel konfigurasi registry &amp; image pull secret di dalam</span> <code style="font-family:'JetBrains Mono',monospace;color:var(--text)">staging.Jenkinsfile</code> <span data-i18n="text_76">yang tidak lagi sinkron dengan environment target. Perbaikan dilakukan langsung di GitLab dengan membuat merge request ke branch patch, menjaga jejak perubahan tetap terdokumentasi dan bisa di-review.</span></p>
-          <div class="tl-shot"><img src="case-03-jenkinsfile.jpg" alt="Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential" data-i18n-alt="alt_2"></div>
+          <button type="button" class="tl-shot case-zoom-trigger" aria-haspopup="dialog"><img src="case-03-jenkinsfile.jpg" alt="Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential" data-i18n-alt="alt_2"></button>
           <div class="tl-caption"><span data-i18n="text_77">GitLab → Edit file → staging.Jenkinsfile (nilai registry &amp; credential disamarkan)</span></div>
         </div>
       </div>
@@ -695,7 +712,7 @@
           <div class="tl-label"><span data-i18n="text_79">04 — Hasil</span></div>
           <div class="tl-title"><span data-i18n="text_80">Pipeline berjalan normal hingga deploy ke staging</span></div>
           <p class="tl-text"><span data-i18n="text_81">Setelah perbaikan di-merge, pipeline di-run ulang dan seluruh stage berhasil dilalui — mulai dari Git Clone, App Build, App Push, hingga Deploy to Staging. Log Blue Ocean mengonfirmasi setiap langkah deployment (apply manifest, set image, rollout restart) berjalan sesuai rencana tanpa error.</span></p>
-          <div class="tl-shot"><img src="case-04-deploy.jpg" alt="Blue Ocean pipeline view menunjukkan seluruh stage sukses hingga Deploy to Staging" data-i18n-alt="alt_3"></div>
+          <button type="button" class="tl-shot case-zoom-trigger" aria-haspopup="dialog"><img src="case-04-deploy.jpg" alt="Blue Ocean pipeline view menunjukkan seluruh stage sukses hingga Deploy to Staging" data-i18n-alt="alt_3"></button>
           <div class="tl-caption"><span data-i18n="text_82">Blue Ocean — seluruh stage sukses, deployment ke staging selesai (domain internal disamarkan)</span></div>
         </div>
       </div>
@@ -725,11 +742,11 @@
       </div>
       <div>
         <ul class="cert-list">
-          <li><button type="button" class="cert-button" data-certificate="assets/certificates/bnsp-analis-program.jpg" aria-haspopup="dialog"><span class="cert-name"><span data-i18n="text_90">Analis Program — BNSP</span></span><span class="cert-date">SEP 2022 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
           <li><button type="button" class="cert-button" data-certificate="assets/certificates/ibm-data-analytics.jpg" aria-haspopup="dialog"><span class="cert-name">Intro to Data Analytics — IBM</span><span class="cert-date">JUL 2025 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
           <li><button type="button" class="cert-button" data-certificate="assets/certificates/ibm-cybersecurity.jpg" aria-haspopup="dialog"><span class="cert-name">Intro to Cybersecurity Careers — IBM</span><span class="cert-date">JUL 2025 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
           <li><button type="button" class="cert-button" data-certificate="assets/certificates/google-technical-support.jpg" aria-haspopup="dialog"><span class="cert-name">Technical Support Fundamentals — Google</span><span class="cert-date">SEP 2024 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
-          <li><button type="button" class="cert-button" data-certificate="assets/certificates/toeps.jpg" aria-haspopup="dialog"><span class="cert-name"><span data-i18n="text_91">TOEPS (Skor 537)</span></span><span class="cert-date">FEB 2023 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
+          <li><button type="button" class="cert-button" data-certificate="assets/certificates/toeps.jpg" aria-haspopup="dialog"><span class="cert-name"><span data-i18n="text_91">TOEPS (Skor 537)</span></span><span class="cert-date">SEP 2024 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
+          <li><button type="button" class="cert-button" data-certificate="assets/certificates/bnsp-analis-program.jpg" aria-haspopup="dialog"><span class="cert-name"><span data-i18n="text_90">Analis Program — BNSP</span></span><span class="cert-date">SEP 2022 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
         </ul>
       </div>
     </div>
@@ -1050,6 +1067,93 @@
     image.removeAttribute('src');
     opener?.focus({preventScroll:true});
   });
+})();
+</script>
+
+<dialog class="zoom-dialog" aria-labelledby="zoom-title">
+  <div class="zoom-toolbar">
+    <h2 id="zoom-title"></h2>
+    <div class="zoom-controls">
+      <button type="button" data-zoom="out">−</button>
+      <output class="zoom-level" aria-live="polite">100%</output>
+      <button type="button" data-zoom="in">+</button>
+      <button type="button" data-zoom="reset">Reset</button>
+      <button type="button" data-zoom="close" autofocus></button>
+    </div>
+  </div>
+  <div class="zoom-viewport"><p class="zoom-status" role="status"></p><img class="zoom-image" alt="" hidden></div>
+  <p class="zoom-hint"></p>
+</dialog>
+<script>
+(() => {
+  const dialog = document.querySelector('.zoom-dialog');
+  const viewport = dialog.querySelector('.zoom-viewport');
+  const image = dialog.querySelector('.zoom-image');
+  const status = dialog.querySelector('.zoom-status');
+  const minus = dialog.querySelector('[data-zoom="out"]');
+  const plus = dialog.querySelector('[data-zoom="in"]');
+  const reset = dialog.querySelector('[data-zoom="reset"]');
+  const close = dialog.querySelector('[data-zoom="close"]');
+  let opener, overflow, scale = 1, baseWidth = 0;
+  function renderZoom(next) {
+    scale = Math.max(1, Math.min(4, next));
+    image.style.width = (baseWidth * scale) + 'px';
+    dialog.querySelector('.zoom-level').textContent = Math.round(scale * 100) + '%';
+    minus.disabled = !baseWidth || scale <= 1;
+    plus.disabled = !baseWidth || scale >= 4;
+    reset.disabled = !baseWidth;
+  }
+  function fit() {
+    if (!baseWidth || !image.naturalWidth) return;
+    baseWidth = Math.min(image.naturalWidth, Math.max(1, viewport.clientWidth - 24), Math.max(1, viewport.clientHeight - 24) * image.naturalWidth / image.naturalHeight);
+    renderZoom(scale);
+  }
+  document.querySelectorAll('.case-zoom-trigger').forEach(button => {
+    button.addEventListener('click', () => {
+      const original = button.querySelector('img');
+      const en = document.documentElement.lang === 'en';
+      opener = button;
+      dialog.querySelector('#zoom-title').textContent = original.alt;
+      image.alt = original.alt;
+      close.textContent = en ? 'Close ×' : 'Tutup ×';
+      minus.setAttribute('aria-label', en ? 'Zoom out' : 'Perkecil');
+      plus.setAttribute('aria-label', en ? 'Zoom in' : 'Perbesar');
+      reset.setAttribute('aria-label', en ? 'Fit image to window' : 'Sesuaikan gambar ke jendela');
+      dialog.querySelector('.zoom-hint').textContent = en ? 'Use + / − to zoom. Scroll or swipe to explore the enlarged image. Press Esc to close.' : 'Gunakan + / − untuk zoom. Gulir atau usap untuk melihat bagian gambar yang diperbesar. Tekan Esc untuk menutup.';
+      status.textContent = en ? 'Loading image…' : 'Memuat gambar…';
+      status.hidden = false;
+      image.hidden = true;
+      baseWidth = 0;
+      renderZoom(1);
+      overflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      dialog.showModal();
+      image.onload = () => {
+        baseWidth = image.naturalWidth;
+        image.hidden = false;
+        status.hidden = true;
+        fit();
+        viewport.scrollTo(0, 0);
+      };
+      image.onerror = () => { status.textContent = en ? 'Image could not be loaded.' : 'Gambar tidak dapat dimuat.'; };
+      image.src = original.currentSrc || original.src;
+    });
+  });
+  plus.addEventListener('click', () => renderZoom(scale + .5));
+  minus.addEventListener('click', () => renderZoom(scale - .5));
+  reset.addEventListener('click', () => { renderZoom(1); viewport.scrollTo(0, 0); });
+  close.addEventListener('click', () => dialog.close());
+  function outside(e) { const r = dialog.getBoundingClientRect(); return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom; }
+  let backdrop = false;
+  dialog.addEventListener('pointerdown', e => { backdrop = outside(e); });
+  dialog.addEventListener('click', e => { if (backdrop && outside(e)) dialog.close(); backdrop = false; });
+  dialog.addEventListener('close', () => {
+    image.onload = image.onerror = null;
+    image.removeAttribute('src');
+    document.body.style.overflow = overflow;
+    opener?.focus({preventScroll:true});
+  });
+  window.addEventListener('resize', () => { if (dialog.open) fit(); });
 })();
 </script>
 </body>
