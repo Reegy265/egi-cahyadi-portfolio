@@ -662,7 +662,7 @@
           <div class="tl-label"><span data-i18n="text_62">01 — Laporan Masuk</span></div>
           <div class="tl-title"><span data-i18n="text_63">Pipeline gagal build, deployment tertahan</span></div>
           <p class="tl-text"><span data-i18n="text_64">User melaporkan pipeline deployment tidak bisa selesai. Berdasarkan SLA 1x24 jam, penanganan langsung dimulai dengan mengecek Stage View di Jenkins untuk memastikan tahap mana yang gagal.</span></p>
-          <div class="tl-shot"><img src="assets/case-01-status.jpg" alt="Jenkins Stage View menunjukkan pipeline gagal di stage App Push" data-i18n-alt="alt_0"></div>
+          <div class="tl-shot"><img src="case-01-status.jpg" alt="Jenkins Stage View menunjukkan pipeline gagal di stage App Push" data-i18n-alt="alt_0"></div>
           <div class="tl-caption"><span data-i18n="text_65">Stage View — Build #34 gagal di stage &quot;App Push&quot; setelah 2 menit 27 detik</span></div>
         </div>
       </div>
@@ -673,7 +673,7 @@
           <div class="tl-label"><span data-i18n="text_68">02 — Investigasi</span></div>
           <div class="tl-title"><span data-i18n="text_69">Menelusuri konfigurasi repository &amp; credential di Jenkins</span></div>
           <p class="tl-text"><span data-i18n="text_70">Masuk ke halaman Configure job untuk memeriksa apakah Repository URL dan credential yang terpasang masih valid dan sesuai dengan yang didefinisikan di source control — langkah standar sebelum menduga masalah ada di sisi kode aplikasi.</span></p>
-          <div class="tl-shot"><img src="assets/case-02-configure.jpg" alt="Halaman konfigurasi Jenkins untuk memeriksa repository dan credential" data-i18n-alt="alt_1"></div>
+          <div class="tl-shot"><img src="case-02-configure.jpg" alt="Halaman konfigurasi Jenkins untuk memeriksa repository dan credential" data-i18n-alt="alt_1"></div>
           <div class="tl-caption"><span data-i18n="text_71">Jenkins → Configure → Advanced Project Options (repository &amp; credential disamarkan)</span></div>
         </div>
       </div>
@@ -684,7 +684,7 @@
           <div class="tl-label"><span data-i18n="text_73">03 — Tindakan</span></div>
           <div class="tl-title"><span data-i18n="text_74">Root cause ditemukan di Jenkinsfile, perbaikan via merge request</span></div>
           <p class="tl-text"><span data-i18n="text_75">Root cause ditemukan pada variabel konfigurasi registry &amp; image pull secret di dalam</span> <code style="font-family:'JetBrains Mono',monospace;color:var(--text)">staging.Jenkinsfile</code> <span data-i18n="text_76">yang tidak lagi sinkron dengan environment target. Perbaikan dilakukan langsung di GitLab dengan membuat merge request ke branch patch, menjaga jejak perubahan tetap terdokumentasi dan bisa di-review.</span></p>
-          <div class="tl-shot"><img src="assets/case-03-jenkinsfile.jpg" alt="Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential" data-i18n-alt="alt_2"></div>
+          <div class="tl-shot"><img src="case-03-jenkinsfile.jpg" alt="Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential" data-i18n-alt="alt_2"></div>
           <div class="tl-caption"><span data-i18n="text_77">GitLab → Edit file → staging.Jenkinsfile (nilai registry &amp; credential disamarkan)</span></div>
         </div>
       </div>
@@ -695,7 +695,7 @@
           <div class="tl-label"><span data-i18n="text_79">04 — Hasil</span></div>
           <div class="tl-title"><span data-i18n="text_80">Pipeline berjalan normal hingga deploy ke staging</span></div>
           <p class="tl-text"><span data-i18n="text_81">Setelah perbaikan di-merge, pipeline di-run ulang dan seluruh stage berhasil dilalui — mulai dari Git Clone, App Build, App Push, hingga Deploy to Staging. Log Blue Ocean mengonfirmasi setiap langkah deployment (apply manifest, set image, rollout restart) berjalan sesuai rencana tanpa error.</span></p>
-          <div class="tl-shot"><img src="assets/case-04-deploy.jpg" alt="Blue Ocean pipeline view menunjukkan seluruh stage sukses hingga Deploy to Staging" data-i18n-alt="alt_3"></div>
+          <div class="tl-shot"><img src="case-04-deploy.jpg" alt="Blue Ocean pipeline view menunjukkan seluruh stage sukses hingga Deploy to Staging" data-i18n-alt="alt_3"></div>
           <div class="tl-caption"><span data-i18n="text_82">Blue Ocean — seluruh stage sukses, deployment ke staging selesai (domain internal disamarkan)</span></div>
         </div>
       </div>
