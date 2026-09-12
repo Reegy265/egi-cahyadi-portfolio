@@ -379,27 +379,8 @@
     overflow:hidden;
     background: #05070d;
     max-width: 640px;
-    cursor: zoom-in;
-    position: relative;
   }
-  .tl-shot::after{
-    content: "⤢ Klik untuk perbesar";
-    position: absolute; right: 10px; bottom: 10px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text);
-    background: rgba(11,18,32,0.82);
-    border: 1px solid var(--panel-border);
-    padding: 4px 9px;
-    border-radius: 6px;
-    opacity: 0;
-    transform: translateY(4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    pointer-events: none;
-  }
-  .tl-shot:hover::after{ opacity:1; transform: translateY(0); }
-  .tl-shot img{ display:block; width:100%; height:auto; transition: transform 0.35s ease; }
-  .tl-shot:hover img{ transform: scale(1.015); }
+  .tl-shot img{ display:block; width:100%; height:auto; }
   .tl-caption{
     font-family:'JetBrains Mono', monospace;
     font-size: 11px; color: var(--text-dim);
@@ -415,67 +396,38 @@
     display:inline-block;
   }
 
-  /* ---------- Lightbox (image pop-out) ---------- */
-  .tl-shot{ cursor: zoom-in; position: relative; }
-  .tl-shot::after{
-    content: "⤢ Klik untuk perbesar";
-    position: absolute; bottom: 10px; right: 10px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: #fff;
-    background: rgba(11,18,32,0.75);
-    padding: 4px 9px;
-    border-radius: 6px;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-  }
-  .tl-shot:hover::after{ opacity: 1; }
-  .tl-shot:hover img{ filter: brightness(0.92); }
-
-  .lightbox{
-    display:none;
-    position: fixed; inset:0; z-index: 100;
-    background: rgba(5,7,13,0.92);
-    align-items:center; justify-content:center;
-    padding: 40px 20px;
-    cursor: zoom-out;
-    animation: fadeIn 0.2s ease;
-  }
-  .lightbox.open{ display:flex; }
-  @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
-  .lightbox img{
-    max-width: min(1100px, 92vw);
-    max-height: 88vh;
-    width: auto; height: auto;
-    border-radius: 10px;
-    border: 1px solid var(--panel-border);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  .lightbox-close{
-    position: absolute; top: 22px; right: 28px;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    color: var(--text);
-    font-size: 20px;
-    display:flex; align-items:center; justify-content:center;
-    cursor: pointer;
-  }
-  .lightbox-close:hover{ border-color: var(--green); color: var(--green); }
-  .lightbox-caption{
-    position:absolute; bottom: 28px; left:0; right:0;
-    text-align:center;
-    font-family:'JetBrains Mono', monospace;
-    font-size: 12.5px;
-    color: var(--text-muted);
-  }
-
   @media (prefers-reduced-motion: reduce){
     .dot{ animation: none; }
     .sys-card{ transition: none; opacity:1; transform:none; }
   }
+
+  /* Language controls match the existing terminal palette. */
+  .topbar-inner{ gap:12px 20px; flex-wrap:wrap; }
+  .topbar-right{ display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+  .language-switcher{ display:flex; align-items:center; gap:4px; }
+  .lang-btn{ appearance:none; border:0; background:transparent; color:var(--text-dim); font:inherit; padding:6px 5px; cursor:pointer; border-radius:3px; }
+  .lang-btn:hover, .lang-btn.active{ color:var(--green); }
+  .lang-btn.active{ font-weight:600; }
+  .dot{ flex-shrink:0; }
+  @media(max-width:480px){
+    .topbar-inner{ font-size:11px; }
+    .topbar-right{ gap:16px; }
+    .sys-duration{ white-space:normal; }
+  }
+
+  .cert-list li{ padding:0; }
+  .cert-button{ display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; padding:11px 0; border:0; background:transparent; color:inherit; font:inherit; text-align:left; cursor:pointer; }
+  .cert-button:hover .cert-name, .cert-button:focus-visible .cert-name{ color:var(--green); }
+  .cert-open{ color:var(--green); }
+  .cert-dialog{ margin:auto; width:min(960px, calc(100% - 32px)); max-height:calc(100dvh - 32px); padding:0; color:var(--text); background:var(--panel); border:1px solid var(--panel-border); border-radius:12px; }
+  .cert-dialog::backdrop{ background:rgba(3,7,15,.86); }
+  .cert-dialog-head{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid var(--panel-border); }
+  .cert-dialog h2{ font:600 17px 'Space Grotesk',sans-serif; }
+  .cert-close{ flex-shrink:0; border:1px solid var(--panel-border); border-radius:6px; background:var(--bg-soft); color:var(--text); font:inherit; padding:8px 12px; cursor:pointer; }
+  .cert-preview{ padding:20px; text-align:center; }
+  .cert-image{ display:block; max-width:100%; max-height:70dvh; width:auto; height:auto; margin:auto; object-fit:contain; }
+  .cert-message{ padding:30px 8px; color:var(--text-muted); }
+  .cert-image[hidden], .cert-message[hidden]{ display:none; }
 </style>
 </head>
 <body>
@@ -484,34 +436,41 @@
 
 <div class="topbar">
   <div class="topbar-inner">
-    <div class="status-live"><span class="dot"></span><span class="mono">STATUS: OPEN TO OPPORTUNITIES</span></div>
-    <div class="topbar-right mono">JAKARTA, ID</div>
+    <div class="status-live"><span class="dot"></span><span class="mono"><span data-i18n="text_0">STATUS: TERBUKA UNTUK PELUANG</span></span></div>
+    <div class="topbar-right mono">
+      <div class="language-switcher" role="group" aria-label="Pilihan bahasa">
+        <button type="button" class="lang-btn active" data-language="id" lang="id" aria-label="Bahasa Indonesia" aria-pressed="true">ID</button>
+        <span aria-hidden="true">/</span>
+        <button type="button" class="lang-btn" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button>
+      </div>
+      <span>JAKARTA, ID</span>
+    </div>
   </div>
 </div>
 
 <div class="wrap">
 
   <header class="hero">
-    <div class="eyebrow">Engineering Portfolio</div>
+    <div class="eyebrow"><span data-i18n="text_1">Portofolio Teknik</span></div>
     <h1 class="name display">Egi Cahyadi</h1>
-    <p class="role-line">IT Infrastructure & NOC Engineer — memantau, merawat, dan menjaga ketersediaan sistem enterprise di lingkungan data center dan instansi pemerintah.</p>
+    <p class="role-line"><span data-i18n="text_2">IT Infrastructure &amp; NOC Engineer — memantau, merawat, dan menjaga ketersediaan sistem enterprise di lingkungan data center dan instansi pemerintah.</span></p>
 
     <div class="metrics-row">
       <div class="metric">
-        <div class="val mono">2+ yrs</div>
-        <div class="lbl">Pengalaman On-Site</div>
+        <div class="val mono"><span data-i18n="text_3">2+ thn</span></div>
+        <div class="lbl"><span data-i18n="text_5">Pengalaman On-Site</span></div>
       </div>
       <div class="metric">
-        <div class="val mono">1x24h</div>
-        <div class="lbl">SLA Respons</div>
+        <div class="val mono"><span data-i18n="text_4">1x24j</span></div>
+        <div class="lbl"><span data-i18n="text_6">SLA Respons</span></div>
       </div>
       <div class="metric">
         <div class="val mono">3</div>
-        <div class="lbl">Cluster Dimonitor</div>
+        <div class="lbl"><span data-i18n="text_7">Cluster Dimonitor</span></div>
       </div>
       <div class="metric">
         <div class="val mono">2</div>
-        <div class="lbl">Instansi Pemerintah</div>
+        <div class="lbl"><span data-i18n="text_8">Instansi Pemerintah</span></div>
       </div>
     </div>
 
@@ -525,38 +484,38 @@
   <section id="about">
     <div class="section-head">
       <span class="section-num mono">01</span>
-      <span class="section-title">Ringkasan</span>
+      <span class="section-title"><span data-i18n="text_9">Ringkasan</span></span>
     </div>
     <p class="section-intro" style="max-width:680px;">
-      Berpengalaman menjaga kestabilan infrastruktur IT di lingkungan enterprise dan instansi pemerintah — mulai dari monitoring traffic real-time, preventive/corrective maintenance server berbasis Red Hat & OpenShift, hingga pembuatan dan perbaikan pipeline CI/CD. Terbiasa bekerja dalam kerangka SLA ketat, berkoordinasi dengan vendor/principal untuk eskalasi insiden, dan menyusun dokumentasi operasional secara rutin.
+      <span data-i18n="text_10">Berpengalaman menjaga kestabilan infrastruktur IT di lingkungan enterprise dan instansi pemerintah — mulai dari monitoring traffic real-time, preventive/corrective maintenance server berbasis Red Hat &amp; OpenShift, hingga pembuatan dan perbaikan pipeline CI/CD. Terbiasa bekerja dalam kerangka SLA ketat, berkoordinasi dengan vendor/principal untuk eskalasi insiden, dan menyusun dokumentasi operasional secara rutin.</span>
     </p>
   </section>
 
   <section id="experience">
     <div class="section-head">
       <span class="section-num mono">02</span>
-      <span class="section-title">Sistem yang Ditangani</span>
+      <span class="section-title"><span data-i18n="text_11">Sistem yang Ditangani</span></span>
     </div>
-    <p class="section-intro">Riwayat penempatan kerja, disusun seperti log status — dari yang sedang berjalan hingga yang telah selesai.</p>
+    <p class="section-intro"><span data-i18n="text_12">Riwayat penempatan kerja, disusun seperti log status — dari yang sedang berjalan hingga yang telah selesai.</span></p>
 
     <div class="sys-card">
       <div class="sys-head">
         <div>
           <div class="sys-title-block">
-            <span class="status-pill online">● Aktif</span>
+            <span class="status-pill online"><span data-i18n="text_13">● Aktif</span></span>
           </div>
-          <div class="sys-role">Engineering On Site</div>
-          <div class="sys-company">PT Mitra Inti Bersama — Ditempatkan di Direktorat Jenderal Bea Cukai Pusat</div>
+          <div class="sys-role"><span data-i18n="text_15">Engineer di Lokasi</span></div>
+          <div class="sys-company"><span data-i18n="text_17">PT Mitra Inti Bersama — Ditempatkan di Direktorat Jenderal Bea Cukai Pusat</span></div>
         </div>
-        <div class="sys-duration">FEB 2026 — SEKARANG</div>
+        <div class="sys-duration"><span data-i18n="text_18">FEB 2026 — SEKARANG</span></div>
       </div>
       <ul class="log-list">
-        <li>Monitoring real-time traffic infrastruktur via Grafana setiap 3 jam di tiga cluster (DC, DRC, DEV) untuk menjaga ketersediaan sesuai SLA.</li>
-        <li>Menyusun log book harian serta laporan harian & bulanan dari data console Red Hat DC, DRC, dan DEV.</li>
-        <li>Membangun dan memperbaiki pipeline CI/CD di Jenkins & GitLab atas permintaan user, dengan SLA respons 1x24 jam.</li>
-        <li>Memimpin proses migrasi cluster produksi dari lingkungan lama (PRODDC) ke cluster baru (DCPROD) tanpa mengganggu layanan berjalan.</li>
-        <li>Melakukan preventive & corrective maintenance aplikasi berbasis Red Hat, serta eskalasi teknis dengan principal.</li>
-        <li>Mengelola dokumentasi operasional di spreadsheet & JIRA, dan memimpin monthly meeting dengan user Bea Cukai.</li>
+        <li><span data-i18n="text_19">Monitoring real-time traffic infrastruktur via Grafana setiap 3 jam di tiga cluster (DC, DRC, DEV) untuk menjaga ketersediaan sesuai SLA.</span></li>
+        <li><span data-i18n="text_20">Menyusun log book harian serta laporan harian &amp; bulanan dari data console Red Hat DC, DRC, dan DEV.</span></li>
+        <li><span data-i18n="text_21">Membangun dan memperbaiki pipeline CI/CD di Jenkins &amp; GitLab atas permintaan user, dengan SLA respons 1x24 jam.</span></li>
+        <li><span data-i18n="text_22">Memimpin proses migrasi cluster produksi dari lingkungan lama (PRODDC) ke cluster baru (DCPROD) tanpa mengganggu layanan berjalan.</span></li>
+        <li><span data-i18n="text_23">Melakukan preventive &amp; corrective maintenance aplikasi berbasis Red Hat, serta eskalasi teknis dengan principal.</span></li>
+        <li><span data-i18n="text_24">Mengelola dokumentasi operasional di spreadsheet &amp; JIRA, dan memimpin monthly meeting dengan user Bea Cukai.</span></li>
       </ul>
     </div>
 
@@ -564,18 +523,18 @@
       <div class="sys-head">
         <div>
           <div class="sys-title-block">
-            <span class="status-pill archived">◍ Selesai</span>
+            <span class="status-pill archived"><span data-i18n="text_14">◍ Selesai</span></span>
           </div>
-          <div class="sys-role">Engineer On Site</div>
-          <div class="sys-company">PT Phoenix Cendekia Indonesia — Data Center Ditjen Dukcapil, Kemendagri</div>
+          <div class="sys-role"><span data-i18n="text_16">Engineer di Lokasi</span></div>
+          <div class="sys-company"><span data-i18n="text_25">PT Phoenix Cendekia Indonesia — Data Center Ditjen Dukcapil, Kemendagri</span></div>
         </div>
         <div class="sys-duration">FEB 2025 — JAN 2026</div>
       </div>
       <ul class="log-list">
-        <li>Memonitor traffic bandwidth, keamanan jaringan, dan ringkasan performa melalui Fortigate & Sonicwall.</li>
-        <li>Melaksanakan preventive & corrective maintenance data center untuk menjaga uptime layanan.</li>
-        <li>Melakukan eskalasi dan koordinasi dengan principal lokal maupun luar negeri untuk penanganan kasus teknis.</li>
-        <li>Menyelenggarakan annual meeting bertema transfer knowledge kepada user Kemendagri.</li>
+        <li><span data-i18n="text_26">Memonitor traffic bandwidth, keamanan jaringan, dan ringkasan performa melalui Fortigate &amp; Sonicwall.</span></li>
+        <li><span data-i18n="text_27">Melaksanakan preventive &amp; corrective maintenance data center untuk menjaga uptime layanan.</span></li>
+        <li><span data-i18n="text_28">Melakukan eskalasi dan koordinasi dengan principal lokal maupun luar negeri untuk penanganan kasus teknis.</span></li>
+        <li><span data-i18n="text_29">Menyelenggarakan annual meeting bertema transfer knowledge kepada user Kemendagri.</span></li>
       </ul>
     </div>
 
@@ -583,15 +542,15 @@
       <div class="sys-head">
         <div>
           <div class="sys-title-block">
-            <span class="status-pill archived">◍ Selesai</span>
+            <span class="status-pill archived"><span data-i18n="text_14">◍ Selesai</span></span>
           </div>
-          <div class="sys-role">Warehouse Koordinator</div>
-          <div class="sys-company">PT Imari Nourriture Indonesia — Event PON Medan-Aceh 2024</div>
+          <div class="sys-role"><span data-i18n="text_30">Koordinator Gudang</span></div>
+          <div class="sys-company"><span data-i18n="text_31">PT Imari Nourriture Indonesia — Event PON Medan-Aceh 2024</span></div>
         </div>
-        <div class="sys-duration">MEI — OKT 2024</div>
+        <div class="sys-duration"><span data-i18n="text_32">MEI — OKT 2024</span></div>
       </div>
       <ul class="log-list">
-        <li>Mengoordinasikan data vendor dan stok barang (food & non-food) dengan menerapkan standar FIFO untuk kelancaran arus gudang selama event skala nasional.</li>
+        <li><span data-i18n="text_33">Mengoordinasikan data vendor dan stok barang (food &amp; non-food) dengan menerapkan standar FIFO untuk kelancaran arus gudang selama event skala nasional.</span></li>
       </ul>
     </div>
 
@@ -599,15 +558,15 @@
       <div class="sys-head">
         <div>
           <div class="sys-title-block">
-            <span class="status-pill archived">◍ Selesai</span>
+            <span class="status-pill archived"><span data-i18n="text_14">◍ Selesai</span></span>
           </div>
-          <div class="sys-role">IT Staff</div>
+          <div class="sys-role"><span data-i18n="text_34">Staf IT</span></div>
           <div class="sys-company">PT Gobel Dharma Sarana Karya</div>
         </div>
         <div class="sys-duration">JAN 2019 — MAR 2020</div>
       </div>
       <ul class="log-list">
-        <li>Mengelola entry data order & inventory bahan baku dalam sistem, serta mewakili manager IT dalam technical meeting dan analisis jaringan komunikasi di site LNG Tangguh, Papua Barat.</li>
+        <li><span data-i18n="text_35">Mengelola entry data order &amp; inventory bahan baku dalam sistem, serta mewakili manager IT dalam technical meeting dan analisis jaringan komunikasi di site LNG Tangguh, Papua Barat.</span></li>
       </ul>
     </div>
   </section>
@@ -615,27 +574,27 @@
   <section id="skills">
     <div class="section-head">
       <span class="section-num mono">03</span>
-      <span class="section-title">Stack & Kompetensi</span>
+      <span class="section-title"><span data-i18n="text_36">Stack &amp; Kompetensi</span></span>
     </div>
     <div class="stack-groups">
       <div class="stack-group">
-        <h3>Platform & Infrastruktur</h3>
+        <h3><span data-i18n="text_37">Platform &amp; Infrastruktur</span></h3>
         <div class="tag-row">
           <span class="tag">Kubernetes</span>
           <span class="tag">Red Hat OpenShift</span>
-          <span class="tag">Linux / Red Hat Admin</span>
+          <span class="tag"><span data-i18n="text_38">Administrasi Linux / Red Hat</span></span>
         </div>
       </div>
       <div class="stack-group">
-        <h3>CI/CD & Automation</h3>
+        <h3><span data-i18n="text_39">CI/CD &amp; Otomasi</span></h3>
         <div class="tag-row">
           <span class="tag">Jenkins</span>
           <span class="tag">GitLab CI/CD</span>
-          <span class="tag">Pipeline Troubleshooting</span>
+          <span class="tag"><span data-i18n="text_40">Pemecahan Masalah Pipeline</span></span>
         </div>
       </div>
       <div class="stack-group">
-        <h3>Monitoring & Network</h3>
+        <h3><span data-i18n="text_41">Pemantauan &amp; Jaringan</span></h3>
         <div class="tag-row">
           <span class="tag">Grafana</span>
           <span class="tag">Fortigate</span>
@@ -643,30 +602,27 @@
         </div>
       </div>
       <div class="stack-group">
-        <h3>Operasional</h3>
+        <h3><span data-i18n="text_42">Operasional</span></h3>
         <div class="tag-row">
-          <span class="tag">Preventive Maintenance</span>
-          <span class="tag">Incident Escalation</span>
-          <span class="tag">SLA Management</span>
+          <span class="tag"><span data-i18n="text_43">Pemeliharaan Preventif</span></span>
+          <span class="tag"><span data-i18n="text_44">Eskalasi Insiden</span></span>
+          <span class="tag"><span data-i18n="text_45">Manajemen SLA</span></span>
         </div>
       </div>
       <div class="stack-group">
-        <h3>Dokumentasi</h3>
+        <h3><span data-i18n="text_46">Dokumentasi</span></h3>
         <div class="tag-row">
           <span class="tag">JIRA</span>
           <span class="tag">Confluence</span>
-          <span class="tag">Reporting</span>
+          <span class="tag"><span data-i18n="text_47">Pelaporan</span></span>
         </div>
       </div>
       <div class="stack-group">
-        <h3>Soft Skills</h3>
+        <h3><span data-i18n="text_48">Keterampilan Interpersonal</span></h3>
         <div class="tag-row">
-          <span class="tag">Manajemen Waktu</span>
-          <span class="tag">Ketelitian</span>
-          <span class="tag">Kepemimpinan</span>
-          <span class="tag">Manajemen Stakeholder</span>
-          <span class="tag">Adaptabilitas</span>
-          <span class="tag">Keputusan di Bawah Tekanan</span>
+          <span class="tag"><span data-i18n="text_49">Manajemen Waktu</span></span>
+          <span class="tag"><span data-i18n="text_50">Analisis</span></span>
+          <span class="tag"><span data-i18n="text_51">Komunikasi</span></span>
         </div>
       </div>
     </div>
@@ -675,105 +631,105 @@
   <section id="case-study">
     <div class="section-head">
       <span class="section-num mono">04</span>
-      <span class="section-title">Studi Kasus Troubleshooting</span>
+      <span class="section-title"><span data-i18n="text_52">Studi Kasus Troubleshooting</span></span>
     </div>
-    <p class="section-intro">Contoh alur penanganan insiden pipeline CI/CD dari laporan masuk hingga layanan kembali normal — didokumentasikan langsung dari sistem kerja sehari-hari.</p>
+    <p class="section-intro"><span data-i18n="text_53">Contoh alur penanganan insiden pipeline CI/CD dari laporan masuk hingga layanan kembali normal — didokumentasikan langsung dari sistem kerja sehari-hari.</span></p>
 
     <div class="case-intro-card">
       <div class="case-meta">
-        <div class="k">Sistem</div>
+        <div class="k"><span data-i18n="text_54">Sistem</span></div>
         <div class="v">Pipeline CI/CD (Jenkins → OpenShift)</div>
       </div>
       <div class="case-meta">
-        <div class="k">Trigger</div>
-        <div class="v">Laporan user, SLA 1x24 jam</div>
+        <div class="k"><span data-i18n="text_55">Pemicu</span></div>
+        <div class="v"><span data-i18n="text_56">Laporan user, SLA 1x24 jam</span></div>
       </div>
       <div class="case-meta">
-        <div class="k">Status Awal</div>
-        <div class="v fail">Build #34 — Gagal di stage App Push</div>
+        <div class="k"><span data-i18n="text_57">Status Awal</span></div>
+        <div class="v fail"><span data-i18n="text_58">Build #34 — Gagal di stage App Push</span></div>
       </div>
       <div class="case-meta">
-        <div class="k">Status Akhir</div>
-        <div class="v ok">Deploy to Staging — Sukses</div>
+        <div class="k"><span data-i18n="text_59">Status Akhir</span></div>
+        <div class="v ok"><span data-i18n="text_60">Deploy to Staging — Sukses</span></div>
       </div>
     </div>
 
     <div class="timeline">
 
       <div class="tl-step step-fail">
-        <div class="tl-node"><div class="tl-badge">REQUEST</div></div>
+        <div class="tl-node"><div class="tl-badge"><span data-i18n="text_61">LAPORAN</span></div></div>
         <div class="tl-body">
-          <div class="tl-label">01 — Laporan Masuk</div>
-          <div class="tl-title">Pipeline gagal build, deployment tertahan</div>
-          <p class="tl-text">User melaporkan pipeline deployment tidak bisa selesai. Berdasarkan SLA 1x24 jam, penanganan langsung dimulai dengan mengecek Stage View di Jenkins untuk memastikan tahap mana yang gagal.</p>
-          <div class="tl-shot"><img src="case-01-status.jpg" alt="Jenkins Stage View menunjukkan pipeline gagal di stage App Push" onclick="openLightbox(this)"></div>
-          <div class="tl-caption">Stage View — Build #34 gagal di stage "App Push" setelah 2 menit 27 detik</div>
+          <div class="tl-label"><span data-i18n="text_62">01 — Laporan Masuk</span></div>
+          <div class="tl-title"><span data-i18n="text_63">Pipeline gagal build, deployment tertahan</span></div>
+          <p class="tl-text"><span data-i18n="text_64">User melaporkan pipeline deployment tidak bisa selesai. Berdasarkan SLA 1x24 jam, penanganan langsung dimulai dengan mengecek Stage View di Jenkins untuk memastikan tahap mana yang gagal.</span></p>
+          <div class="tl-shot"><img src="assets/case-01-status.jpg" alt="Jenkins Stage View menunjukkan pipeline gagal di stage App Push" data-i18n-alt="alt_0"></div>
+          <div class="tl-caption"><span data-i18n="text_65">Stage View — Build #34 gagal di stage &quot;App Push&quot; setelah 2 menit 27 detik</span></div>
         </div>
       </div>
 
       <div class="tl-step step-find">
-        <div class="tl-node"><div class="tl-badge">CEK<br>KONFIG</div></div>
+        <div class="tl-node"><div class="tl-badge"><span data-i18n="text_66">CEK</span><br><span data-i18n="text_67">KONFIG</span></div></div>
         <div class="tl-body">
-          <div class="tl-label">02 — Investigasi</div>
-          <div class="tl-title">Menelusuri konfigurasi repository & credential di Jenkins</div>
-          <p class="tl-text">Masuk ke halaman Configure job untuk memeriksa apakah Repository URL dan credential yang terpasang masih valid dan sesuai dengan yang didefinisikan di source control — langkah standar sebelum menduga masalah ada di sisi kode aplikasi.</p>
-          <div class="tl-shot"><img src="case-02-configure.jpg" alt="Halaman konfigurasi Jenkins untuk memeriksa repository dan credential" onclick="openLightbox(this)"></div>
-          <div class="tl-caption">Jenkins → Configure → Advanced Project Options (repository & credential disamarkan)</div>
+          <div class="tl-label"><span data-i18n="text_68">02 — Investigasi</span></div>
+          <div class="tl-title"><span data-i18n="text_69">Menelusuri konfigurasi repository &amp; credential di Jenkins</span></div>
+          <p class="tl-text"><span data-i18n="text_70">Masuk ke halaman Configure job untuk memeriksa apakah Repository URL dan credential yang terpasang masih valid dan sesuai dengan yang didefinisikan di source control — langkah standar sebelum menduga masalah ada di sisi kode aplikasi.</span></p>
+          <div class="tl-shot"><img src="assets/case-02-configure.jpg" alt="Halaman konfigurasi Jenkins untuk memeriksa repository dan credential" data-i18n-alt="alt_1"></div>
+          <div class="tl-caption"><span data-i18n="text_71">Jenkins → Configure → Advanced Project Options (repository &amp; credential disamarkan)</span></div>
         </div>
       </div>
 
       <div class="tl-step step-fix">
-        <div class="tl-node"><div class="tl-badge">PERBAIKAN</div></div>
+        <div class="tl-node"><div class="tl-badge"><span data-i18n="text_72">PERBAIKAN</span></div></div>
         <div class="tl-body">
-          <div class="tl-label">03 — Tindakan</div>
-          <div class="tl-title">Root cause ditemukan di Jenkinsfile, perbaikan via merge request</div>
-          <p class="tl-text">Root cause ditemukan pada variabel konfigurasi registry & image pull secret di dalam <code style="font-family:'JetBrains Mono',monospace;color:var(--text)">staging.Jenkinsfile</code> yang tidak lagi sinkron dengan environment target. Perbaikan dilakukan langsung di GitLab dengan membuat merge request ke branch patch, menjaga jejak perubahan tetap terdokumentasi dan bisa di-review.</p>
-          <div class="tl-shot"><img src="case-03-jenkinsfile.jpg" alt="Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential" onclick="openLightbox(this)"></div>
-          <div class="tl-caption">GitLab → Edit file → staging.Jenkinsfile (nilai registry & credential disamarkan)</div>
+          <div class="tl-label"><span data-i18n="text_73">03 — Tindakan</span></div>
+          <div class="tl-title"><span data-i18n="text_74">Root cause ditemukan di Jenkinsfile, perbaikan via merge request</span></div>
+          <p class="tl-text"><span data-i18n="text_75">Root cause ditemukan pada variabel konfigurasi registry &amp; image pull secret di dalam</span> <code style="font-family:'JetBrains Mono',monospace;color:var(--text)">staging.Jenkinsfile</code> <span data-i18n="text_76">yang tidak lagi sinkron dengan environment target. Perbaikan dilakukan langsung di GitLab dengan membuat merge request ke branch patch, menjaga jejak perubahan tetap terdokumentasi dan bisa di-review.</span></p>
+          <div class="tl-shot"><img src="assets/case-03-jenkinsfile.jpg" alt="Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential" data-i18n-alt="alt_2"></div>
+          <div class="tl-caption"><span data-i18n="text_77">GitLab → Edit file → staging.Jenkinsfile (nilai registry &amp; credential disamarkan)</span></div>
         </div>
       </div>
 
       <div class="tl-step step-ok">
-        <div class="tl-node"><div class="tl-badge">RESOLVED</div></div>
+        <div class="tl-node"><div class="tl-badge"><span data-i18n="text_78">SELESAI</span></div></div>
         <div class="tl-body">
-          <div class="tl-label">04 — Hasil</div>
-          <div class="tl-title">Pipeline berjalan normal hingga deploy ke Staging</div>
-          <p class="tl-text">Setelah perbaikan di-merge, pipeline di-run ulang dan seluruh stage berhasil dilalui — mulai dari Git Clone, App Build, App Push, hingga Deploy to OCP Staging DC. Stage View juga mengonfirmasi tahap terakhir "Send Notification to Teams" berjalan sukses, menandakan tim terkait otomatis mendapat notifikasi begitu deployment selesai.</p>
-          <div class="tl-shot"><img src="case-04-deploy.jpg" alt="Jenkins Stage View menunjukkan seluruh stage sukses hingga Deploy to OCP Staging DC dan Send Notification to Teams" onclick="openLightbox(this)"></div>
-          <div class="tl-caption">Stage View — seluruh stage sukses, deployment ke Staging selesai (nama project disamarkan)</div>
+          <div class="tl-label"><span data-i18n="text_79">04 — Hasil</span></div>
+          <div class="tl-title"><span data-i18n="text_80">Pipeline berjalan normal hingga deploy ke staging</span></div>
+          <p class="tl-text"><span data-i18n="text_81">Setelah perbaikan di-merge, pipeline di-run ulang dan seluruh stage berhasil dilalui — mulai dari Git Clone, App Build, App Push, hingga Deploy to Staging. Log Blue Ocean mengonfirmasi setiap langkah deployment (apply manifest, set image, rollout restart) berjalan sesuai rencana tanpa error.</span></p>
+          <div class="tl-shot"><img src="assets/case-04-deploy.jpg" alt="Blue Ocean pipeline view menunjukkan seluruh stage sukses hingga Deploy to Staging" data-i18n-alt="alt_3"></div>
+          <div class="tl-caption"><span data-i18n="text_82">Blue Ocean — seluruh stage sukses, deployment ke staging selesai (domain internal disamarkan)</span></div>
         </div>
       </div>
 
     </div>
 
-    <p class="redact-note"><span class="box"></span> Nama domain, hostname registry, dan credential ID pada tangkapan layar telah disamarkan untuk menjaga kerahasiaan sistem instansi.</p>
+    <p class="redact-note"><span class="box"></span> <span data-i18n="text_83">Nama domain, hostname registry, dan credential ID pada tangkapan layar telah disamarkan untuk menjaga kerahasiaan sistem instansi.</span></p>
   </section>
 
   <section id="education">
     <div class="section-head">
       <span class="section-num mono">05</span>
-      <span class="section-title">Pendidikan & Sertifikasi</span>
+      <span class="section-title"><span data-i18n="text_84">Pendidikan &amp; Sertifikasi</span></span>
     </div>
     <div class="two-col">
       <div>
         <div class="edu-item">
-          <div class="edu-degree">S1 Sistem Informasi</div>
-          <div class="edu-meta">Universitas Nusa Mandiri · Sep 2021 – Des 2022</div>
-          <div class="edu-detail">IPK 3,66 (Pujian). Skripsi: "Sistem Informasi Penjualan Buku CV. Multi Lentera Abadi"</div>
+          <div class="edu-degree"><span data-i18n="text_85">S1 Sistem Informasi</span></div>
+          <div class="edu-meta"><span data-i18n="text_86">Universitas Nusa Mandiri · Sep 2021 – Des 2022</span></div>
+          <div class="edu-detail"><span data-i18n="text_87">IPK 3,66 (Pujian). Skripsi: &quot;Sistem Informasi Penjualan Buku CV. Multi Lentera Abadi&quot;</span></div>
         </div>
         <div class="edu-item">
-          <div class="edu-degree">D-III Manajemen Informatika</div>
+          <div class="edu-degree"><span data-i18n="text_88">D-III Manajemen Informatika</span></div>
           <div class="edu-meta">Bina Sarana Informatika · Sep 2014 – Nov 2017</div>
-          <div class="edu-detail">IPK 3,63 (Pujian). Tugas Akhir: "Perancangan Sistem Informasi Penjualan Merchandise Komunitas Motor Box Berbasis Web"</div>
+          <div class="edu-detail"><span data-i18n="text_89">IPK 3,63 (Pujian). Tugas Akhir: &quot;Perancangan Sistem Informasi Penjualan Merchandise Komunitas Motor Box Berbasis Web&quot;</span></div>
         </div>
       </div>
       <div>
         <ul class="cert-list">
-          <li><span class="cert-name">Intro to Data Analytics — IBM</span><span class="cert-date">JUL 2025</span></li>
-          <li><span class="cert-name">Intro to Cybersecurity Careers — IBM</span><span class="cert-date">JUL 2025</span></li>
-          <li><span class="cert-name">Technical Support Fundamentals — Google</span><span class="cert-date">SEP 2024</span></li>
-          <li><span class="cert-name">TOEPS (Skor 537)</span><span class="cert-date">FEB 2023</span></li>
-          <li><span class="cert-name">Analis Program — BNSP</span><span class="cert-date">SEP 2022</span></li>
+          <li><button type="button" class="cert-button" data-certificate="assets/certificates/bnsp-analis-program.jpg" aria-haspopup="dialog"><span class="cert-name"><span data-i18n="text_90">Analis Program — BNSP</span></span><span class="cert-date">SEP 2022 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
+          <li><button type="button" class="cert-button" data-certificate="assets/certificates/ibm-data-analytics.jpg" aria-haspopup="dialog"><span class="cert-name">Intro to Data Analytics — IBM</span><span class="cert-date">JUL 2025 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
+          <li><button type="button" class="cert-button" data-certificate="assets/certificates/ibm-cybersecurity.jpg" aria-haspopup="dialog"><span class="cert-name">Intro to Cybersecurity Careers — IBM</span><span class="cert-date">JUL 2025 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
+          <li><button type="button" class="cert-button" data-certificate="assets/certificates/google-technical-support.jpg" aria-haspopup="dialog"><span class="cert-name">Technical Support Fundamentals — Google</span><span class="cert-date">SEP 2024 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
+          <li><button type="button" class="cert-button" data-certificate="assets/certificates/toeps.jpg" aria-haspopup="dialog"><span class="cert-name"><span data-i18n="text_91">TOEPS (Skor 537)</span></span><span class="cert-date">FEB 2023 <span class="cert-open" aria-hidden="true">↗</span></span></button></li>
         </ul>
       </div>
     </div>
@@ -790,18 +746,240 @@
         <a href="tel:+6281381919633">+62 813-8191-9633</a>
       </div>
     </div>
-    <div class="footer-note">Portofolio ini terakhir diperbarui Agustus 2026.</div>
+    <div class="footer-note"><span data-i18n="text_92">Portofolio ini terakhir diperbarui September 2026.</span></div>
   </footer>
 
 </div>
 
-<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
-  <div class="lightbox-close" onclick="closeLightbox(event)">✕</div>
-  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
-  <div class="lightbox-caption" id="lightbox-caption"></div>
-</div>
-
 <script>
+  // Update only translated text; keep existing elements and animation state intact.
+  (() => {
+    const translations = {
+  "id": {
+    "text_0": "STATUS: TERBUKA UNTUK PELUANG",
+    "text_1": "Portofolio Teknik",
+    "text_2": "IT Infrastructure & NOC Engineer — memantau, merawat, dan menjaga ketersediaan sistem enterprise di lingkungan data center dan instansi pemerintah.",
+    "text_3": "2+ thn",
+    "text_4": "1x24j",
+    "text_5": "Pengalaman On-Site",
+    "text_6": "SLA Respons",
+    "text_7": "Cluster Dimonitor",
+    "text_8": "Instansi Pemerintah",
+    "text_9": "Ringkasan",
+    "text_10": "Berpengalaman menjaga kestabilan infrastruktur IT di lingkungan enterprise dan instansi pemerintah — mulai dari monitoring traffic real-time, preventive/corrective maintenance server berbasis Red Hat & OpenShift, hingga pembuatan dan perbaikan pipeline CI/CD. Terbiasa bekerja dalam kerangka SLA ketat, berkoordinasi dengan vendor/principal untuk eskalasi insiden, dan menyusun dokumentasi operasional secara rutin.",
+    "text_11": "Sistem yang Ditangani",
+    "text_12": "Riwayat penempatan kerja, disusun seperti log status — dari yang sedang berjalan hingga yang telah selesai.",
+    "text_13": "● Aktif",
+    "text_14": "◍ Selesai",
+    "text_15": "Engineer di Lokasi",
+    "text_16": "Engineer di Lokasi",
+    "text_17": "PT Mitra Inti Bersama — Ditempatkan di Direktorat Jenderal Bea Cukai Pusat",
+    "text_18": "FEB 2026 — SEKARANG",
+    "text_19": "Monitoring real-time traffic infrastruktur via Grafana setiap 3 jam di tiga cluster (DC, DRC, DEV) untuk menjaga ketersediaan sesuai SLA.",
+    "text_20": "Menyusun log book harian serta laporan harian & bulanan dari data console Red Hat DC, DRC, dan DEV.",
+    "text_21": "Membangun dan memperbaiki pipeline CI/CD di Jenkins & GitLab atas permintaan user, dengan SLA respons 1x24 jam.",
+    "text_22": "Memimpin proses migrasi cluster produksi dari lingkungan lama (PRODDC) ke cluster baru (DCPROD) tanpa mengganggu layanan berjalan.",
+    "text_23": "Melakukan preventive & corrective maintenance aplikasi berbasis Red Hat, serta eskalasi teknis dengan principal.",
+    "text_24": "Mengelola dokumentasi operasional di spreadsheet & JIRA, dan memimpin monthly meeting dengan user Bea Cukai.",
+    "text_25": "PT Phoenix Cendekia Indonesia — Data Center Ditjen Dukcapil, Kemendagri",
+    "text_26": "Memonitor traffic bandwidth, keamanan jaringan, dan ringkasan performa melalui Fortigate & Sonicwall.",
+    "text_27": "Melaksanakan preventive & corrective maintenance data center untuk menjaga uptime layanan.",
+    "text_28": "Melakukan eskalasi dan koordinasi dengan principal lokal maupun luar negeri untuk penanganan kasus teknis.",
+    "text_29": "Menyelenggarakan annual meeting bertema transfer knowledge kepada user Kemendagri.",
+    "text_30": "Koordinator Gudang",
+    "text_31": "PT Imari Nourriture Indonesia — Event PON Medan-Aceh 2024",
+    "text_32": "MEI — OKT 2024",
+    "text_33": "Mengoordinasikan data vendor dan stok barang (food & non-food) dengan menerapkan standar FIFO untuk kelancaran arus gudang selama event skala nasional.",
+    "text_34": "Staf IT",
+    "text_35": "Mengelola entry data order & inventory bahan baku dalam sistem, serta mewakili manager IT dalam technical meeting dan analisis jaringan komunikasi di site LNG Tangguh, Papua Barat.",
+    "text_36": "Stack & Kompetensi",
+    "text_37": "Platform & Infrastruktur",
+    "text_38": "Administrasi Linux / Red Hat",
+    "text_39": "CI/CD & Otomasi",
+    "text_40": "Pemecahan Masalah Pipeline",
+    "text_41": "Pemantauan & Jaringan",
+    "text_42": "Operasional",
+    "text_43": "Pemeliharaan Preventif",
+    "text_44": "Eskalasi Insiden",
+    "text_45": "Manajemen SLA",
+    "text_46": "Dokumentasi",
+    "text_47": "Pelaporan",
+    "text_48": "Keterampilan Interpersonal",
+    "text_49": "Manajemen Waktu",
+    "text_50": "Analisis",
+    "text_51": "Komunikasi",
+    "text_52": "Studi Kasus Troubleshooting",
+    "text_53": "Contoh alur penanganan insiden pipeline CI/CD dari laporan masuk hingga layanan kembali normal — didokumentasikan langsung dari sistem kerja sehari-hari.",
+    "text_54": "Sistem",
+    "text_55": "Pemicu",
+    "text_56": "Laporan user, SLA 1x24 jam",
+    "text_57": "Status Awal",
+    "text_58": "Build #34 — Gagal di stage App Push",
+    "text_59": "Status Akhir",
+    "text_60": "Deploy to Staging — Sukses",
+    "text_61": "LAPORAN",
+    "text_62": "01 — Laporan Masuk",
+    "text_63": "Pipeline gagal build, deployment tertahan",
+    "text_64": "User melaporkan pipeline deployment tidak bisa selesai. Berdasarkan SLA 1x24 jam, penanganan langsung dimulai dengan mengecek Stage View di Jenkins untuk memastikan tahap mana yang gagal.",
+    "text_65": "Stage View — Build #34 gagal di stage \"App Push\" setelah 2 menit 27 detik",
+    "text_66": "CEK",
+    "text_67": "KONFIG",
+    "text_68": "02 — Investigasi",
+    "text_69": "Menelusuri konfigurasi repository & credential di Jenkins",
+    "text_70": "Masuk ke halaman Configure job untuk memeriksa apakah Repository URL dan credential yang terpasang masih valid dan sesuai dengan yang didefinisikan di source control — langkah standar sebelum menduga masalah ada di sisi kode aplikasi.",
+    "text_71": "Jenkins → Configure → Advanced Project Options (repository & credential disamarkan)",
+    "text_72": "PERBAIKAN",
+    "text_73": "03 — Tindakan",
+    "text_74": "Root cause ditemukan di Jenkinsfile, perbaikan via merge request",
+    "text_75": "Root cause ditemukan pada variabel konfigurasi registry & image pull secret di dalam",
+    "text_76": "yang tidak lagi sinkron dengan environment target. Perbaikan dilakukan langsung di GitLab dengan membuat merge request ke branch patch, menjaga jejak perubahan tetap terdokumentasi dan bisa di-review.",
+    "text_77": "GitLab → Edit file → staging.Jenkinsfile (nilai registry & credential disamarkan)",
+    "text_78": "SELESAI",
+    "text_79": "04 — Hasil",
+    "text_80": "Pipeline berjalan normal hingga deploy ke staging",
+    "text_81": "Setelah perbaikan di-merge, pipeline di-run ulang dan seluruh stage berhasil dilalui — mulai dari Git Clone, App Build, App Push, hingga Deploy to Staging. Log Blue Ocean mengonfirmasi setiap langkah deployment (apply manifest, set image, rollout restart) berjalan sesuai rencana tanpa error.",
+    "text_82": "Blue Ocean — seluruh stage sukses, deployment ke staging selesai (domain internal disamarkan)",
+    "text_83": "Nama domain, hostname registry, dan credential ID pada tangkapan layar telah disamarkan untuk menjaga kerahasiaan sistem instansi.",
+    "text_84": "Pendidikan & Sertifikasi",
+    "text_85": "S1 Sistem Informasi",
+    "text_86": "Universitas Nusa Mandiri · Sep 2021 – Des 2022",
+    "text_87": "IPK 3,66 (Pujian). Skripsi: \"Sistem Informasi Penjualan Buku CV. Multi Lentera Abadi\"",
+    "text_88": "D-III Manajemen Informatika",
+    "text_89": "IPK 3,63 (Pujian). Tugas Akhir: \"Perancangan Sistem Informasi Penjualan Merchandise Komunitas Motor Box Berbasis Web\"",
+    "text_90": "Analis Program — BNSP",
+    "text_91": "TOEPS (Skor 537)",
+    "text_92": "Portofolio ini terakhir diperbarui september 2026.",
+    "alt_0": "Jenkins Stage View menunjukkan pipeline gagal di stage App Push",
+    "alt_1": "Halaman konfigurasi Jenkins untuk memeriksa repository dan credential",
+    "alt_2": "Edit Jenkinsfile di GitLab untuk memperbaiki konfigurasi registry dan credential",
+    "alt_3": "Blue Ocean pipeline view menunjukkan seluruh stage sukses hingga Deploy to Staging"
+  },
+  "en": {
+    "text_0": "STATUS: OPEN TO OPPORTUNITIES",
+    "text_1": "Engineering Portfolio",
+    "text_2": "IT Infrastructure & NOC Engineer — monitoring, maintaining, and ensuring enterprise system availability across data centers and government institutions.",
+    "text_3": "2+ yrs",
+    "text_4": "1x24h",
+    "text_5": "On-Site Experience",
+    "text_6": "Response SLA",
+    "text_7": "Clusters Monitored",
+    "text_8": "Government Institutions",
+    "text_9": "Summary",
+    "text_10": "Experienced in maintaining stable IT infrastructure across enterprise and government environments — from real-time traffic monitoring and preventive/corrective maintenance of Red Hat & OpenShift servers to building and troubleshooting CI/CD pipelines. Accustomed to strict SLAs, coordinating incident escalations with vendors and technology providers, and preparing regular operational documentation.",
+    "text_11": "Systems Managed",
+    "text_12": "Work assignments presented as a status log — from current engagements to completed roles.",
+    "text_13": "● Active",
+    "text_14": "◍ Completed",
+    "text_15": "On-Site Engineer",
+    "text_16": "On-Site Engineer",
+    "text_17": "PT Mitra Inti Bersama — Assigned to the Directorate General of Customs and Excise Headquarters",
+    "text_18": "FEB 2026 — PRESENT",
+    "text_19": "Monitor infrastructure traffic in real time using Grafana every 3 hours across three clusters (DC, DRC, DEV) to maintain availability in line with SLAs.",
+    "text_20": "Maintain daily logbooks and prepare daily & monthly reports using Red Hat console data from DC, DRC, and DEV.",
+    "text_21": "Build and troubleshoot CI/CD pipelines in Jenkins & GitLab at users’ request, with a 24-hour response SLA.",
+    "text_22": "Lead the production cluster migration from the legacy environment (PRODDC) to the new cluster (DCPROD) without disrupting running services.",
+    "text_23": "Perform preventive & corrective maintenance on Red Hat-based applications and coordinate technical escalations with technology providers.",
+    "text_24": "Manage operational documentation in spreadsheets & JIRA and lead monthly meetings with Customs and Excise users.",
+    "text_25": "PT Phoenix Cendekia Indonesia — Directorate General of Population and Civil Registration Data Center, Ministry of Home Affairs",
+    "text_26": "Monitored bandwidth traffic, network security, and performance summaries using Fortigate & Sonicwall.",
+    "text_27": "Performed preventive & corrective data center maintenance to maintain service uptime.",
+    "text_28": "Escalated technical issues and coordinated their resolution with local and overseas technology providers.",
+    "text_29": "Organized an annual knowledge-sharing meeting for Ministry of Home Affairs users.",
+    "text_30": "Warehouse Coordinator",
+    "text_31": "PT Imari Nourriture Indonesia — 2024 National Sports Week (PON), Medan–Aceh",
+    "text_32": "MAY — OCT 2024",
+    "text_33": "Coordinated vendor data and inventory (food & non-food), applying FIFO standards to keep warehouse operations running smoothly during a national event.",
+    "text_34": "IT Staff",
+    "text_35": "Managed order entry & raw material inventory in the system and represented the IT manager in technical meetings and communication network analysis at the Tangguh LNG site in West Papua.",
+    "text_36": "Technology Stack & Skills",
+    "text_37": "Platforms & Infrastructure",
+    "text_38": "Linux / Red Hat Administration",
+    "text_39": "CI/CD & Automation",
+    "text_40": "Pipeline Troubleshooting",
+    "text_41": "Monitoring & Networking",
+    "text_42": "Operations",
+    "text_43": "Preventive Maintenance",
+    "text_44": "Incident Escalation",
+    "text_45": "SLA Management",
+    "text_46": "Documentation",
+    "text_47": "Reporting",
+    "text_48": "Soft Skills",
+    "text_49": "Time Management",
+    "text_50": "Analysis",
+    "text_51": "Communication",
+    "text_52": "Troubleshooting Case Study",
+    "text_53": "An example of handling a CI/CD pipeline incident, from the initial report to service recovery — documented directly from day-to-day operational systems.",
+    "text_54": "System",
+    "text_55": "Trigger",
+    "text_56": "User report, 24-hour SLA",
+    "text_57": "Initial Status",
+    "text_58": "Build #34 — Failed at App Push stage",
+    "text_59": "Final Status",
+    "text_60": "Deploy to Staging — Successful",
+    "text_61": "REQUEST",
+    "text_62": "01 — Report Received",
+    "text_63": "Pipeline build fails, deployment blocked",
+    "text_64": "A user reported that the deployment pipeline could not complete. Under the 24-hour SLA, troubleshooting began immediately by checking Jenkins Stage View to identify the failed stage.",
+    "text_65": "Stage View — Build #34 failed at the \"App Push\" stage after 2 minutes 27 seconds",
+    "text_66": "CHECK",
+    "text_67": "CONFIG",
+    "text_68": "02 — Investigation",
+    "text_69": "Inspecting repository & credential settings in Jenkins",
+    "text_70": "Opened the job’s Configure page to check whether the Repository URL and configured credentials were still valid and matched source control — a standard step before investigating application code.",
+    "text_71": "Jenkins → Configure → Advanced Project Options (repository & credentials redacted)",
+    "text_72": "FIX",
+    "text_73": "03 — Action",
+    "text_74": "Root cause found in Jenkinsfile, fixed through a merge request",
+    "text_75": "The root cause was traced to registry & image pull secret configuration variables in",
+    "text_76": "that were no longer aligned with the target environment. The fix was made directly in GitLab through a merge request to the patch branch, keeping the change history documented and available for review.",
+    "text_77": "GitLab → Edit file → staging.Jenkinsfile (registry & credential values redacted)",
+    "text_78": "RESOLVED",
+    "text_79": "04 — Result",
+    "text_80": "Pipeline restored through deployment to staging",
+    "text_81": "After the fix was merged, the pipeline was rerun and all stages passed — from Git Clone, App Build, and App Push to Deploy to Staging. Blue Ocean logs confirmed that every deployment step (apply manifest, set image, rollout restart) completed as expected without errors.",
+    "text_82": "Blue Ocean — all stages passed, staging deployment completed (internal domains redacted)",
+    "text_83": "Domain names, registry hostnames, and credential IDs in the screenshots have been redacted to protect the institution’s system confidentiality.",
+    "text_84": "Education & Certifications",
+    "text_85": "Bachelor’s Degree in Information Systems",
+    "text_86": "Universitas Nusa Mandiri · Sep 2021 – Dec 2022",
+    "text_87": "GPA 3.66 (with honors). Thesis: \"Book Sales Information System for CV. Multi Lentera Abadi\"",
+    "text_88": "Diploma III in Informatics Management",
+    "text_89": "GPA 3.63 (with honors). Final project: \"Design of a Web-Based Merchandise Sales Information System for the Motor Box Community\"",
+    "text_90": "Program Analyst — BNSP",
+    "text_91": "TOEPS (Score 537)",
+    "text_92": "This portfolio was last updated in August 2026.",
+    "alt_0": "Jenkins Stage View showing the pipeline failure at the App Push stage",
+    "alt_1": "Jenkins configuration page for checking repository settings and credentials",
+    "alt_2": "Editing the Jenkinsfile in GitLab to fix registry and credential configuration",
+    "alt_3": "Blue Ocean pipeline view showing all stages passing through Deploy to Staging"
+  }
+};
+    const buttons = document.querySelectorAll('[data-language]');
+    function setLanguage(requested, persist = true) {
+      const language = requested === 'en' ? 'en' : 'id';
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        element.textContent = translations[language][element.dataset.i18n];
+      });
+      document.querySelectorAll('[data-i18n-alt]').forEach(element => {
+        element.alt = translations[language][element.dataset.i18nAlt];
+      });
+      document.documentElement.lang = language;
+      document.querySelector('.language-switcher').setAttribute('aria-label', language === 'id' ? 'Pilihan bahasa' : 'Language selection');
+      buttons.forEach(button => {
+        const active = button.dataset.language === language;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      // Storage can be unavailable in private mode or for local files.
+      if (persist) { try { localStorage.setItem('language', language); } catch (_) {} }
+    }
+    buttons.forEach(button => button.addEventListener('click', () => setLanguage(button.dataset.language)));
+    let savedLanguage = 'id';
+    try { savedLanguage = localStorage.getItem('language') || 'id'; } catch (_) {}
+    setLanguage(savedLanguage, false);
+  })();
+
+
   const cards = document.querySelectorAll('.sys-card');
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -812,25 +990,67 @@
     });
   }, { threshold: 0.15 });
   cards.forEach(c => io.observe(c));
-
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const lightboxCaption = document.getElementById('lightbox-caption');
-
-  function openLightbox(imgEl){
-    lightboxImg.src = imgEl.src;
-    lightboxCaption.textContent = imgEl.alt;
-    lightbox.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeLightbox(e){
-    lightbox.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  document.addEventListener('keydown', (e) => {
-    if(e.key === 'Escape') closeLightbox(e);
-  });
 </script>
 
+
+<dialog class="cert-dialog" aria-labelledby="cert-dialog-title">
+  <div class="cert-dialog-head">
+    <h2 id="cert-dialog-title"></h2>
+    <button type="button" class="cert-close" autofocus></button>
+  </div>
+  <div class="cert-preview">
+    <p class="cert-message" role="status"></p>
+    <img class="cert-image" hidden alt="">
+  </div>
+</dialog>
+<script>
+(() => {
+  const dialog = document.querySelector('.cert-dialog');
+  const title = document.querySelector('#cert-dialog-title');
+  const close = dialog.querySelector('.cert-close');
+  const image = dialog.querySelector('.cert-image');
+  const message = dialog.querySelector('.cert-message');
+  let opener, previousOverflow;
+  document.querySelectorAll('[data-certificate]').forEach(button => {
+    button.addEventListener('click', () => {
+      const english = document.documentElement.lang === 'en';
+      opener = button;
+      title.textContent = button.querySelector('.cert-name').textContent;
+      close.textContent = english ? 'Close ×' : 'Tutup ×';
+      image.alt = (english ? 'Certificate: ' : 'Sertifikat: ') + title.textContent;
+      image.hidden = true;
+      message.hidden = false;
+      message.textContent = english ? 'Loading certificate…' : 'Memuat sertifikat…';
+      image.onload = () => { image.hidden = false; message.hidden = true; };
+      image.onerror = () => {
+        image.hidden = true;
+        message.hidden = false;
+        message.textContent = english ? 'The certificate image is not available yet.' : 'Foto sertifikat belum tersedia.';
+      };
+      image.src = button.dataset.certificate;
+      previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      dialog.showModal();
+    });
+  });
+  close.addEventListener('click', () => dialog.close());
+  let backdropPointer = false;
+  function outside(event) {
+    const box = dialog.getBoundingClientRect();
+    return event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom;
+  }
+  dialog.addEventListener('pointerdown', event => { backdropPointer = outside(event); });
+  dialog.addEventListener('click', event => {
+    if (backdropPointer && outside(event)) dialog.close();
+    backdropPointer = false;
+  });
+  dialog.addEventListener('close', () => {
+    document.body.style.overflow = previousOverflow;
+    image.onload = image.onerror = null;
+    image.removeAttribute('src');
+    opener?.focus({preventScroll:true});
+  });
+})();
+</script>
 </body>
 </html>
